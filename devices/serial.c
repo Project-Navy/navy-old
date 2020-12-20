@@ -49,7 +49,7 @@ putc_serial(enum PORT port, char c)
 }
 
 void 
-puts_serial(enum PORT port, char *s)
+puts_serial(enum PORT port, const char *s)
 {
     size_t i;
 

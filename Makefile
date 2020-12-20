@@ -46,7 +46,8 @@ TARGET = kernel.elf
 
 SRC =								\
 	$(wildcard devices/*.c)			\
-	$(wildcard kernel/*.c)
+	$(wildcard kernel/*.c)			\
+	$(wildcard libk/*.c)
 
 OBJ = $(patsubst %.c, $(BUILD_DIRECTORY)/%.o, $(SRC))
 

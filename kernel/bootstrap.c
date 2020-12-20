@@ -20,6 +20,7 @@
 #include <stivale2.h>
 #include <stdint.h>
 #include <stddef.h>
+#include <libk/debug.h>
 
 #include "devices/serial.h"
 #include "kernel/macro.h"
@@ -44,7 +45,7 @@ bootstrap(struct stivale2_struct *info)
     __unused(info);
 
     init_serial(COM1);
-    puts_serial(COM1, "Hello, World!"); 
+    printk("Hello, World!\n");
     
     for (;;);
 }

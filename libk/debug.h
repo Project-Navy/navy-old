@@ -17,20 +17,11 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICE_SERIAL_H_
-#define _DEVICE_SERIAL_H_
+#ifndef _LIBK_DEBUG_H_
+#define _LIBK_DEBUG_H_
 
-enum PORT
-{
-    COM1 = 0x3f8,
-    COM2 = 0x2f8,
-    COM3 = 0x3e8,
-    COM4 = 0x2e8
-};
+#include <stdarg.h>
 
-void init_serial(enum PORT);
-void putc_serial(enum PORT, char);
-void puts_serial(enum PORT, const char *);
+void printk(const char *, ...);
 
-
-#endif /* !_DEVICE_SERIAL_H_ */
+#endif /* !_LIBK_DEBUG_H_ */
