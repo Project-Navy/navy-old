@@ -1,0 +1,6 @@
+[submodule "third-party/echfs"]
+	path = third-party/echfs
+	url = https://github.com/qword-os/echfs
+[submodule "third-party/limine"]
+	path = third-party/limine
+	url = https://github.com/limine-bootloader/limine
