@@ -29,6 +29,7 @@ CFLAGS =							\
 	-Wextra							\
 	-I.								\
 	-Ithird-party/limine/stivale	\
+	-Ilibc							\
 	-ffreestanding	             	\
     -g			                 	\
     -nostdlib			         	\
@@ -47,7 +48,8 @@ TARGET = kernel.elf
 SRC =								\
 	$(wildcard devices/*.c)			\
 	$(wildcard kernel/*.c)			\
-	$(wildcard libk/*.c)
+	$(wildcard libk/*.c)			\
+	$(wildcard libc/*.c)		
 
 OBJ = $(patsubst %.c, $(BUILD_DIRECTORY)/%.o, $(SRC))
 
@@ -63,7 +65,7 @@ $(TARGET): $(OBJ)
 
 all: $(TARGET)
 
-run:
+run: clean all
 	qemu-system-x86_64 -drive format=raw,file=navy.img -serial stdio -m 1G -enable-kvm -display sdl 
 
 clean:

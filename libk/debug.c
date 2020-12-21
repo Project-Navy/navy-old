@@ -76,3 +76,17 @@ printk(const char *format, ...)
         }
     }
 }
+
+void 
+__assert(const char *expr, const char *file, const char *func, int line)
+{
+    (void) line;
+
+    puts_serial(COM1, "Assert failed: ");
+    puts_serial(COM1, expr);
+    puts_serial(COM1, " in ");
+    puts_serial(COM1, file);
+    puts_serial(COM1, " (");
+    puts_serial(COM1, func);
+    puts_serial(COM1, ") \n");
+}

@@ -17,39 +17,43 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stivale2.h>
-#include <stdint.h>
-#include <stddef.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stddef.h>
+#include <stdint.h>
+
 #include <libk/debug.h>
 
-#include "devices/serial.h"
-#include "kernel/macro.h"
-
-typedef uint8_t stack[4096];
-static stack stacks[10] = { 0 };
-
-void bootstrap(struct stivale2_struct *);
-
-__attribute__((section(".stivale2hdr"), used))
-struct stivale2_header header2 = 
+char *
+itoa(int32_t value, char *str, uint16_t base)
 {
-    .entry_point = (uint64_t) bootstrap,
-    .stack       = (uintptr_t) stacks[0] + sizeof(stack),
-    .flags       = 0,
-    .tags        = 0
-};
+    size_t index = 0;
+    int8_t digit;
 
-void 
-bootstrap(struct stivale2_struct *info)
-{
-    (void) info;
-    
-	char test[64];
-    init_serial(COM1);
+    if (value < 0)
+    {
+        value *= -1;
+    }
 
-	itoa(69, test, 10);
-    printk(test);
+    do
+    {
+        digit = value % base;
+        value /= base;
+        
+        if (digit < 0xa)
+        {
+            str[index++] = digit + '0';
+        }
+
+        else
+        {
+            str[index++] = (digit - 0xa) + 'a';
+        }
+
+    }
+    while (value);
     
-    for (;;);
+    str = strrev(str);
+    
+    return str;
 }

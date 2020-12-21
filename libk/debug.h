@@ -19,9 +19,11 @@
 
 #ifndef _LIBK_DEBUG_H_
 #define _LIBK_DEBUG_H_
+#define assert(__expr) ((__expr) ? (void)(0) : __assert(#__expr, __FILE__, __FUNCTION__, __LINE__))
 
 #include <stdarg.h>
 
 void printk(const char *, ...);
+void __assert(const char *, const char *, const char *, int);
 
 #endif /* !_LIBK_DEBUG_H_ */
