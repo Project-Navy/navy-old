@@ -20,6 +20,9 @@
 #ifndef _LIBC_STRING_H_
 #define _LIBC_STRING_H_ 
 
+#include <stddef.h>
+
 char *strrev(char *);
+size_t strlen(const char *);
 
 #endif /* !_LIBC_STRING_H_ */

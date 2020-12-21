@@ -20,6 +20,8 @@
 #include <stdbool.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 #include <libk/debug.h>
 
 #include "devices/serial.h"
@@ -29,6 +31,7 @@ printk(const char *format, ...)
 {
     va_list list;
     size_t padding;
+    char nbr[64];
 
     const char *ptr = format; 
     bool is_parsing = false;
@@ -57,12 +60,41 @@ printk(const char *format, ...)
             else if (*ptr == '0')
             {
                 padding = *++ptr - '0';
-                ptr++;    
             }
             else if (*ptr == 's')
             {
                 puts_serial(COM1, (char *) va_arg(list, const char *));
                 is_parsing = false;
+            }
+            else if (*ptr == 'd')
+            {
+                itoa(va_arg(list, int), nbr, 10);
+
+                while (padding && padding - strlen(nbr) > 0)
+                {
+                    putc_serial(COM1, '0');
+                    padding--;
+                }
+
+                padding = 0;
+                puts_serial(COM1, nbr);
+            }
+            else if(*ptr == 'x')
+            {
+                itoa(va_arg(list, int), nbr, 16);
+                
+                while (padding && padding - strlen(nbr) > 0)
+                {
+                    putc_serial(COM1, '0');
+                    padding--;
+                }
+
+                padding = 0; 
+                puts_serial(COM1, nbr);
+            }
+            else if(*ptr == 'c')
+            {
+                putc_serial(COM1, (char) va_arg(list, int));
             }
         }
         else 
@@ -80,7 +112,8 @@ printk(const char *format, ...)
 void 
 __assert(const char *expr, const char *file, const char *func, int line)
 {
-    (void) line;
+    char line_str[64];
+    itoa(line, line_str, 10);
 
     puts_serial(COM1, "Assert failed: ");
     puts_serial(COM1, expr);
@@ -88,5 +121,7 @@ __assert(const char *expr, const char *file, const char *func, int line)
     puts_serial(COM1, file);
     puts_serial(COM1, " (");
     puts_serial(COM1, func);
+    puts_serial(COM1, ": line ");
+    puts_serial(COM1, line_str);
     puts_serial(COM1, ") \n");
 }

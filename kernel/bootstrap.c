@@ -45,11 +45,9 @@ bootstrap(struct stivale2_struct *info)
 {
     (void) info;
     
-	char test[64];
     init_serial(COM1);
 
-	itoa(69, test, 10);
-    printk(test);
-    
+    printk("%04x", 42);
+
     for (;;);
 }
