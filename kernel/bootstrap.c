@@ -26,10 +26,13 @@
 #include "devices/serial.h"
 #include "kernel/macro.h"
 
+#include "kernel/mem/gdt.h"
+
 typedef uint8_t stack[4096];
 static stack stacks[10] = { 0 };
 
 void bootstrap(struct stivale2_struct *);
+
 
 __attribute__((section(".stivale2hdr"), used))
 struct stivale2_header header2 = 
@@ -46,8 +49,8 @@ bootstrap(struct stivale2_struct *info)
     (void) info;
     
     init_serial(COM1);
+    init_gdt();
 
-    printk("%04x", 42);
 
     for (;;);
 }
