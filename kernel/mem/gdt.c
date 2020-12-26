@@ -42,7 +42,7 @@ init_gdt(void)
     init_descriptor(0, 0, 0, &desc[0]);
 
     init_descriptor(0, 0xffffffff, PRESENT | EXECUTABLE | READ_WRITE | KERNEL, &desc[1]);
-    init_descriptor(0, 0xffffffff, PRESENT | READ_WRITE | KERNEL, &desc[1]);
+    init_descriptor(0, 0xffffffff, PRESENT | READ_WRITE | KERNEL, &desc[2]);
 
     init_descriptor(0, 0xffffffff, PRESENT | EXECUTABLE | READ_WRITE | USER, &desc[3]);
     init_descriptor(0, 0xffffffff, PRESENT | READ_WRITE | USER, &desc[4]);
