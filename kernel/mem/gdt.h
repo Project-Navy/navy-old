@@ -20,27 +20,27 @@
 #ifndef _KERNEL_MEM_GDT_H_
 #define _KERNEL_MEM_GDT_H_
 
-#define GDT_ENTRIES 5
+#define GDT_LENGTH 5
 
 #include <stdint.h>
 
-typedef struct __attribute__((__packed__))
+typedef struct __attribute__((packed))
 {
-    uint16_t size;
-    uintptr_t offset;
+   uint16_t base_low;
+   uint16_t limit_low;
+   uint8_t base_mid;
+
+   uint8_t flags: 4;
+   uint8_t limit_high: 4;
+   uint8_t access;
+   uint8_t base_high;
 } GdtDescriptor;
 
-typedef struct __attribute__((__packed__))
+typedef struct __attribute__((packed))
 {
-    uint16_t base0_15;
-    uint16_t limit0_15;
-
-    uint8_t base24_31;
-    uint8_t flags: 4;
-    uint8_t limit16_19: 4;
-    uint8_t access;
-    uint8_t base16_23;
-} GdtEntry;
+    uint16_t limit;
+    uintptr_t base;
+} GdtPointer;
 
 enum GDT_BIT_FIELD
 {
@@ -55,8 +55,8 @@ enum GDT_BIT_FIELD
 };
 
 void init_gdt(void);
-void init_entry(uint32_t, uint32_t, uint8_t, GdtEntry *);
+void init_descriptor(uint32_t, uint32_t, uint8_t, GdtDescriptor*);
 
-extern void flush_gdt();    /* TODO */
+extern void flush_gdt(uintptr_t);
 
-#endif
+#endif /* !_KERNEL_MEM_GDT_H_ */

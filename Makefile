@@ -21,6 +21,9 @@ BUILD_DIRECTORY := build
 
 CC = x86_64-elf-gcc
 LD = x86_64-elf-ld
+AS = nasm 
+
+ASFLAGS = -felf64
 
 CFLAGS =							\
 	-MD								\
@@ -50,14 +53,22 @@ SRC =								\
 	$(wildcard kernel/*.c)			\
 	$(wildcard kernel/*/*.c)		\
 	$(wildcard libk/*.c)			\
-	$(wildcard libc/*.c)			
+	$(wildcard libc/*.c)	
 
-OBJ = $(patsubst %.c, $(BUILD_DIRECTORY)/%.o, $(SRC))
+ASRC = $(wildcard kernel/*/*.s)		
+
+OBJ = $(patsubst %.c, $(BUILD_DIRECTORY)/%.c.o, $(SRC)) \
+	$(patsubst %.s, $(BUILD_DIRECTORY)/%.s.o, $(ASRC))
 
 
-$(BUILD_DIRECTORY)/%.o: %.c
+$(BUILD_DIRECTORY)/%.c.o: %.c
 	$(DIRECTORY_GUARD)
 	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIRECTORY)/%.s.o: %.s
+	$(DIRECTORY_GUARD)
+	$(AS) $(ASFLAGS) $< -o $@
+
 
 $(TARGET): $(OBJ)
 	$(DIRECTORY_GUARD)

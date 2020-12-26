@@ -20,35 +20,35 @@
 #include "gdt.h"
 
 void 
-init_entry(uint32_t base, uint32_t limit, uint8_t access, GdtEntry *entry)
+init_descriptor(uint32_t base, uint32_t limit, uint8_t access, GdtDescriptor *self)
 {
-    entry->base0_15 = base & 0xffff;
-    entry->limit0_15 = base & 0xffff;
+    self->flags = 0b1010;
+    self->access = access;
 
-    entry->base24_31 = (base & 0xff000000) >> 24;
-    entry->limit16_19 = (limit & 0xf0000) >> 16;
-    entry->base16_23 = (base & 0xff0000) >> 16;
+    self->base_low = base & 0xffff;
+    self->base_mid = (base & 0xff0000) >> 16;
+    self->base_high = (base & 0xff000000) >> 24;
 
-    entry->flags = 0b1110;
-    entry->access = access;
+    self->limit_low = limit & 0xffff;
+    self->limit_high = (limit & 0xf0000) >> 16;
 }
 
 void 
 init_gdt(void)
 {
-    GdtEntry entries[GDT_ENTRIES];
-    GdtDescriptor descriptor;
+    GdtDescriptor desc[GDT_LENGTH];
+    GdtPointer ptr;
 
-    init_entry(0, 0, 0, &entries[0]);   /* NULL DESCRIPTOR */
+    init_descriptor(0, 0, 0, &desc[0]);
 
-    init_entry(0, 0xffffffff, PRESENT | KERNEL | DATA | READ_WRITE, &entries[1]); /* KERNEL DATA */
-    init_entry(0, 0xffffffff, PRESENT | KERNEL | CODE | EXECUTABLE | READ_WRITE, &entries[2]); /* KERNEL CODE */
+    init_descriptor(0, 0xffffffff, PRESENT | EXECUTABLE | READ_WRITE | KERNEL, &desc[1]);
+    init_descriptor(0, 0xffffffff, PRESENT | READ_WRITE | KERNEL, &desc[1]);
 
-    init_entry(0, 0xffffffff, PRESENT | USER | DATA | READ_WRITE, &entries[3]); /* USER DATA */
-    init_entry(0, 0xffffffff, PRESENT | USER | CODE | EXECUTABLE | READ_WRITE, &entries[4]); /* USER CODE*/
+    init_descriptor(0, 0xffffffff, PRESENT | EXECUTABLE | READ_WRITE | USER, &desc[3]);
+    init_descriptor(0, 0xffffffff, PRESENT | READ_WRITE | USER, &desc[4]);
 
-    descriptor.offset = (uintptr_t) &entries[0];
-    descriptor.size = (uint16_t) (sizeof(GdtEntry) * GDT_ENTRIES);
+    ptr.base = (uintptr_t) &desc[0];
+    ptr.limit = sizeof(desc) - 1;
 
-    flush_gdt(&descriptor);
+    flush_gdt((uintptr_t) &ptr);
 }
