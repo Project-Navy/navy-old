@@ -40,9 +40,7 @@ init_descriptor(uint32_t base, uint32_t limit, uint8_t access, GdtDescriptor *se
     printk("base_mid\t=\t%b", self->base_mid);
     printk("base_high\t=\t%b", self->base_high);
     printk("limit_low\t=\t%b", self->limit_low);
-    printk("limit_high\t=\t%b", self->limit_high);
-
-    
+    printk("limit_high\t=\t%b", self->limit_high);    
 }
 
 void 

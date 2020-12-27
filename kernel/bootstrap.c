@@ -33,7 +33,6 @@ static stack stacks[10] = { 0 };
 
 void bootstrap(struct stivale2_struct *);
 
-
 __attribute__((section(".stivale2hdr"), used))
 struct stivale2_header header2 = 
 {
