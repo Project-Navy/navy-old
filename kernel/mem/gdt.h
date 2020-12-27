@@ -44,14 +44,10 @@ typedef struct __attribute__((packed))
 
 enum GDT_BIT_FIELD
 {
-    PRESENT    = 0b10000000,
     KERNEL     = 0b00000000,
     USER       = 0b01100000,
-    CODE       = 0b00010000,
+    CODE       = 0b00011000,
     DATA       = 0b00010000,
-    EXECUTABLE = 0b00001000,
-    TSS        = 0b00000000,
-    READ_WRITE = 0b00000010,
 };
 
 void init_gdt(void);

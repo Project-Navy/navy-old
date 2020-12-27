@@ -37,10 +37,10 @@ printk(const char *format, ...)
     bool is_parsing = false;
 
     va_start(list, format);
-    (void) padding;
 
     while (*ptr)
     {
+        memset(nbr, 0, 64);
         if (*ptr == '%')
         {
             is_parsing = true;
@@ -92,6 +92,19 @@ printk(const char *format, ...)
                 padding = 0; 
                 puts_serial(COM1, nbr);
             }
+            else if(*ptr == 'b')
+            {
+                itoa(va_arg(list, int), nbr, 2);
+                
+                while (padding && padding - strlen(nbr) > 0)
+                {
+                    putc_serial(COM1, '0');
+                    padding--;
+                }
+
+                padding = 0; 
+                puts_serial(COM1, nbr);
+            }
             else if(*ptr == 'c')
             {
                 putc_serial(COM1, (char) va_arg(list, int));
@@ -107,6 +120,8 @@ printk(const char *format, ...)
             ptr++;
         }
     }
+
+    putc_serial(COM1, '\n');
 }
 
 void 

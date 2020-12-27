@@ -18,12 +18,13 @@
  */
 
 #include "gdt.h"
+#include "libk/debug.h"
 
 void 
 init_descriptor(uint32_t base, uint32_t limit, uint8_t access, GdtDescriptor *self)
 {
     self->flags = 0b1010;
-    self->access = access;
+    self->access = 0b10000010 | access;
 
     self->base_low = base & 0xffff;
     self->base_mid = (base & 0xff0000) >> 16;
@@ -31,6 +32,17 @@ init_descriptor(uint32_t base, uint32_t limit, uint8_t access, GdtDescriptor *se
 
     self->limit_low = limit & 0xffff;
     self->limit_high = (limit & 0xf0000) >> 16;
+    
+    printk("");
+    printk("flags\t\t=\t%b", self->flags);
+    printk("access\t\t=\t%08b", self->access);
+    printk("base_low\t=\t%b", self->base_low);
+    printk("base_mid\t=\t%b", self->base_mid);
+    printk("base_high\t=\t%b", self->base_high);
+    printk("limit_low\t=\t%b", self->limit_low);
+    printk("limit_high\t=\t%b", self->limit_high);
+
+    
 }
 
 void 
@@ -41,11 +53,11 @@ init_gdt(void)
 
     init_descriptor(0, 0, 0, &desc[0]);
 
-    init_descriptor(0, 0xffffffff, PRESENT | EXECUTABLE | READ_WRITE | KERNEL, &desc[1]);
-    init_descriptor(0, 0xffffffff, PRESENT | READ_WRITE | KERNEL, &desc[2]);
+    init_descriptor(0, 0, KERNEL | DATA, &desc[1]);
+    init_descriptor(0, 0, KERNEL | CODE, &desc[2]);
 
-    init_descriptor(0, 0xffffffff, PRESENT | EXECUTABLE | READ_WRITE | USER, &desc[3]);
-    init_descriptor(0, 0xffffffff, PRESENT | READ_WRITE | USER, &desc[4]);
+    init_descriptor(0, 0, USER | DATA, &desc[3]);
+    init_descriptor(0, 0, USER | CODE, &desc[4]);
 
     ptr.base = (uintptr_t) &desc[0];
     ptr.limit = sizeof(desc) - 1;

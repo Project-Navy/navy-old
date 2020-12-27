@@ -51,6 +51,7 @@ bootstrap(struct stivale2_struct *info)
     init_serial(COM1);
     init_gdt();
 
+    printk("[+] GDT loaded !");
 
     for (;;);
 }
