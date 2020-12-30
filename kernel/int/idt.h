@@ -17,17 +17,38 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICE_IO_H_
-#define _DEVICE_IO_H_
+#ifndef _KERNEL_INT_IDT_H_
+#define _KERNEL_INT_IDT_H_
+
+#define IDT_ENTRY_LENGTH 256
 
 #include <stdint.h>
 
-void outb(uint16_t port, uint8_t val);
-uint8_t inb(uint16_t port);
-void outw(uint16_t port, uint16_t val);
-uint16_t inw(uint16_t port);
-void outd(uint16_t port, uint8_t val);
-uint32_t ind(uint16_t port);
-void io_wait(void);
+typedef struct __attribute__((packed))
+{
+    uint16_t limit;
+    uint32_t base;
+} Idtr;
 
-#endif /* !_DEVICE_IO_H_ */
+typedef struct __attribute__((packed))
+{
+   uint16_t offset_1; 
+   uint16_t selector; 
+   uint8_t ist;       
+   uint8_t type_attr; 
+   uint16_t offset_2; 
+   uint32_t offset_3; 
+   uint32_t zero;     
+} IdtDesc;
+
+enum type_attr
+{
+    INTGATE = 0x8e,
+    TRAPGATE = 0xef
+};
+
+void init_idt(void);
+void init_idt_desc(uintptr_t, enum type_attr, IdtDesc *);
+extern void flush_idt(uintptr_t);
+
+#endif /* !_KERNEL_INT_IDT_H_ */

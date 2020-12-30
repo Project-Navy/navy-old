@@ -17,17 +17,20 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICE_IO_H_
-#define _DEVICE_IO_H_
+#ifndef _NAVY_X86_PIC_H_
+#define _NAVY_X86_PIC_H_
+
+#define MASTER_CMD      0x20
+#define MASTER_DATA     0x21
+#define MASTER_OFFSET   0x20
+
+#define SLAVE_CMD       0xa0
+#define SLAVE_DATA      0xa1
+#define SLAVE_OFFSET    0x28
 
 #include <stdint.h>
 
-void outb(uint16_t port, uint8_t val);
-uint8_t inb(uint16_t port);
-void outw(uint16_t port, uint16_t val);
-uint16_t inw(uint16_t port);
-void outd(uint16_t port, uint8_t val);
-uint32_t ind(uint16_t port);
-void io_wait(void);
+void init_pic(void);
+void PIC_sendEOI(int);
 
-#endif /* !_DEVICE_IO_H_ */
+#endif

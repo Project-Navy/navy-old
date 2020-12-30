@@ -17,17 +17,18 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICE_IO_H_
-#define _DEVICE_IO_H_
+#include <libk/debug.h>
 
-#include <stdint.h>
+#include "kernel/int/interrupt.h"
+#include "kernel/int/pic.h"
 
-void outb(uint16_t port, uint8_t val);
-uint8_t inb(uint16_t port);
-void outw(uint16_t port, uint16_t val);
-uint16_t inw(uint16_t port);
-void outd(uint16_t port, uint8_t val);
-uint32_t ind(uint16_t port);
-void io_wait(void);
+uintptr_t
+interrupts_handler(uintptr_t rsp)
+{
+    InterruptStackFrame *stackframe = (InterruptStackFrame *) rsp;
 
-#endif /* !_DEVICE_IO_H_ */
+    __asm__("sti");
+    PIC_sendEOI(stackframe->intno);
+
+    return rsp;
+}

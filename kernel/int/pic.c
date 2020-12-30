@@ -17,17 +17,45 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICE_IO_H_
-#define _DEVICE_IO_H_
+#include "devices/io.h"
+#include "kernel/int/pic.h"
 
-#include <stdint.h>
+void
+init_pic(void)
+{
+    outb(MASTER_CMD, 0x10 | 0x01);
+    io_wait();
+    outb(SLAVE_CMD, 0x10 | 0x01);
+    io_wait();
 
-void outb(uint16_t port, uint8_t val);
-uint8_t inb(uint16_t port);
-void outw(uint16_t port, uint16_t val);
-uint16_t inw(uint16_t port);
-void outd(uint16_t port, uint8_t val);
-uint32_t ind(uint16_t port);
-void io_wait(void);
+    outb(MASTER_DATA, MASTER_OFFSET);
+    io_wait();
+    outb(SLAVE_DATA, SLAVE_OFFSET);
+    io_wait();
 
-#endif /* !_DEVICE_IO_H_ */
+    outb(MASTER_DATA, 4);
+    io_wait();
+    outb(SLAVE_DATA, 2);
+    io_wait();
+
+    outb(MASTER_DATA, 0x01);
+    io_wait();
+    outb(SLAVE_DATA, 0x01);
+    io_wait();
+
+    outb(MASTER_DATA, 0);
+    io_wait();
+    outb(SLAVE_DATA, 0);
+    io_wait();
+}
+
+void
+PIC_sendEOI(int intno)
+{
+    if (intno >= 40)
+    {
+        outb(SLAVE_CMD, 0x20);
+    }
+
+    outb(MASTER_CMD, 0x20);
+}

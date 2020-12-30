@@ -28,6 +28,9 @@
 
 #include "kernel/mem/gdt.h"
 
+#include "kernel/int/idt.h"
+#include "kernel/int/pic.h"
+
 typedef uint8_t stack[4096];
 static stack stacks[10] = { 0 };
 
@@ -46,10 +49,17 @@ void
 bootstrap(struct stivale2_struct *info)
 {
     (void) info;
-    
     init_serial(COM1);
+
     init_gdt();
     printk("%s GDT loaded !", SUCCESS);
 
+    init_pic();
+    printk("%s PIC initialised !", SUCCESS);
+
+    init_idt();
+    printk("%s IDT loaded !", SUCCESS);
+
+    __asm__("int $1");
     for (;;);
 }

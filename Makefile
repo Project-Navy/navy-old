@@ -78,7 +78,7 @@ $(TARGET): $(OBJ)
 all: $(TARGET)
 
 run: clean all
-	qemu-system-x86_64 -drive format=raw,file=navy.img -serial stdio -m 1G -enable-kvm 
+	qemu-system-x86_64 -drive format=raw,file=navy.img -serial stdio -m 1G --enable-kvm
 
 clean:
 	rm -f kernel.elf
