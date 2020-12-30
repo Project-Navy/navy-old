@@ -28,7 +28,6 @@ flush_gdt:
     mov ss, ax
 
     mov ax, 0x28
-    ltr ax
 
     ret
  
