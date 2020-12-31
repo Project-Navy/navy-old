@@ -2,6 +2,5 @@
 
 [GLOBAL flush_idt]
 flush_idt:
-    sti
     lidt [rdi]
     ret

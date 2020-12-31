@@ -22,13 +22,14 @@
 #include "kernel/int/interrupt.h"
 #include "kernel/int/pic.h"
 
-uintptr_t
+void
 interrupts_handler(uintptr_t rsp)
 {
     InterruptStackFrame *stackframe = (InterruptStackFrame *) rsp;
-
-    __asm__("sti");
     PIC_sendEOI(stackframe->intno);
 
-    return rsp;
+    printk("GOT INTERRUPT NO %d", stackframe->intno);
+
+    __asm__("cli");
+    __asm__("hlt");
 }

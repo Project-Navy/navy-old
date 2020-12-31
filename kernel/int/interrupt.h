@@ -32,6 +32,6 @@ typedef struct __attribute__((packed))
     uint64_t ss;
 } InterruptStackFrame;
 
-uintptr_t interrupts_handler(uintptr_t);
+void interrupts_handler(uintptr_t);
 
 #endif /* !_KERNEL_INT_INTERRUPT_H_ */

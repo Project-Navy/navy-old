@@ -27,7 +27,7 @@
 typedef struct __attribute__((packed))
 {
     uint16_t limit;
-    uint32_t base;
+    uintptr_t base;
 } Idtr;
 
 typedef struct __attribute__((packed))

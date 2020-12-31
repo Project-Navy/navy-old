@@ -60,6 +60,7 @@ bootstrap(struct stivale2_struct *info)
     init_idt();
     printk("%s IDT loaded !", SUCCESS);
 
-    __asm__("int $1");
+    __asm__("int $0");
+
     for (;;);
 }

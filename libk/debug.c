@@ -30,9 +30,9 @@ void
 printk(const char *format, ...)
 {
     va_list list;
-    size_t padding;
     char nbr[64];
 
+    size_t padding = 0;
     const char *ptr = format; 
     bool is_parsing = false;
 
@@ -48,7 +48,6 @@ printk(const char *format, ...)
             continue;
         }
         
-
         if (is_parsing)
         {
             if (*ptr == '%') 
