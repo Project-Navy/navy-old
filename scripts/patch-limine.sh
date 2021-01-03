@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright (C) 2021 KeyboardSlayer (Jordan Dalcq)
+# Copyright (C) 2020-2021 KeyboardSlayer (Jordan Dalcq)
 # 
 # This file is part of Navy.
 # 
