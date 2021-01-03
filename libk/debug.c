@@ -19,6 +19,7 @@
 
 #include <stdbool.h>
 #include <stdarg.h>
+#include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -50,10 +51,10 @@ printk(const char *format, ...)
         
         if (is_parsing)
         {
+            is_parsing = false;
             if (*ptr == '%') 
             {
                 putc_serial(COM1, '%');
-                is_parsing = false;
                 ptr++;
             }
             else if (*ptr == '0')
@@ -63,11 +64,10 @@ printk(const char *format, ...)
             else if (*ptr == 's')
             {
                 puts_serial(COM1, (char *) va_arg(list, const char *));
-                is_parsing = false;
             }
             else if (*ptr == 'd')
             {
-                itoa(va_arg(list, int), nbr, 10);
+                itoa(va_arg(list, int64_t), nbr, 10);
 
                 while (padding && padding - strlen(nbr) > 0)
                 {
@@ -80,7 +80,7 @@ printk(const char *format, ...)
             }
             else if(*ptr == 'x')
             {
-                itoa(va_arg(list, int), nbr, 16);
+                itoa(va_arg(list, int64_t), nbr, 16);
                 
                 while (padding && padding - strlen(nbr) > 0)
                 {
@@ -93,7 +93,7 @@ printk(const char *format, ...)
             }
             else if(*ptr == 'b')
             {
-                itoa(va_arg(list, int), nbr, 2);
+                itoa(va_arg(list, int64_t), nbr, 2);
                 
                 while (padding && padding - strlen(nbr) > 0)
                 {
@@ -114,10 +114,7 @@ printk(const char *format, ...)
             putc_serial(COM1, *ptr);
         }
 
-        if (*ptr)
-        {
-            ptr++;
-        }
+        ptr++;
     }
 
     putc_serial(COM1, '\n');

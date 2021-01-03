@@ -44,5 +44,6 @@ strrev(char *s)
 		s[end--] = tmp;
 	}
 
+	s[i+1] = '\0';
 	return s;
 }

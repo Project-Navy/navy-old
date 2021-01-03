@@ -25,7 +25,7 @@
 #include <libk/debug.h>
 
 char *
-itoa(int32_t value, char *str, uint16_t base)
+itoa(int64_t value, char *str, uint16_t base)
 {
     size_t index = 0;
     int8_t digit;
@@ -49,10 +49,10 @@ itoa(int32_t value, char *str, uint16_t base)
         {
             str[index++] = (digit - 0xa) + 'a';
         }
-
     }
     while (value);
     
+    str[index] = '\0';
     str = strrev(str);
     
     return str;

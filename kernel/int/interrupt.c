@@ -22,13 +22,51 @@
 #include "kernel/int/interrupt.h"
 #include "kernel/int/pic.h"
 
+const char *exceptions[32] = {
+    "Division by zero",
+    "Debug",
+    "Non-maskable Interrupt",
+    "Breakpoint",
+    "Overflow",
+    "Bound Range Exceeded",
+    "Invalid Opcode",
+    "Device Not Available",
+    "Double Fault",
+    "Coprocessor Segment Overrun",
+    "Invalid TSS",
+    "Segment Not Present",
+    "Stack-Segment Fault",
+    "General Protection Fault",
+    "Page Fault",
+    "Reserved",
+    "x87 Floating-Point Exception",
+    "Aligment Check",
+    "Machine Check",
+    "SIMD Floating-Point Exception",
+    "Virtualization Exception" "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Reserved",
+    "Security Exception",
+    "Reserved"
+};
+
 void
 interrupts_handler(uintptr_t rsp)
 {
     InterruptStackFrame *stackframe = (InterruptStackFrame *) rsp;
     PIC_sendEOI(stackframe->intno);
 
-    printk("GOT INTERRUPT NO %d", stackframe->intno);
+    if (stackframe->intno < 32)
+    {
+        printk("%s %s (ERR: %d) ", ERROR, exceptions[stackframe->intno], 
+                stackframe->intno, stackframe->err);
+    }
 
     __asm__("cli");
     __asm__("hlt");

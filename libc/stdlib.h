@@ -23,7 +23,7 @@
 #include <stdint.h>
 #include <stddef.h>
 
-char *itoa(int32_t, char *, uint16_t);
+char *itoa(int64_t, char *, uint16_t);
 void *memset(void *, int, size_t);
 
 #endif /* !_STDLIB_H_ */

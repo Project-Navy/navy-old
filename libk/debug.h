@@ -21,6 +21,7 @@
 #define _LIBK_DEBUG_H_
 
 #define SUCCESS "\033[32m[+]\033[0m"
+#define ERROR "\033[31m[-]\033[0m"
 
 #define assert(__expr) ((__expr) ? (void)(0) : __assert(#__expr, __FILE__, __FUNCTION__, __LINE__))
 
