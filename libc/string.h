@@ -24,5 +24,6 @@
 
 char *strrev(char *);
 size_t strlen(const char *);
+char *strcpy(char *, const char *);
 
 #endif /* !_LIBC_STRING_H_ */

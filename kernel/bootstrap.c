@@ -65,5 +65,7 @@ bootstrap(struct stivale2_struct *stivale)
 
     stivale2_parse_header(&info, stivale);
 
+    __asm__("int $0");
+
     for (;;);
 }

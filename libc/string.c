@@ -33,17 +33,29 @@ strlen(const char *s)
 char *
 strrev(char *s)
 {
-	size_t i;
-	size_t end = strlen(s) - 1;
 	char tmp;
+	size_t end = strlen(s) - 1;
+	size_t start = 0;
 
-	for (i = 0; i < end; i++)
+	while (start < end)
 	{
-		tmp = s[i];
-		s[i] = s[end];
+		tmp = s[start];
+		s[start++] = s[end];
 		s[end--] = tmp;
 	}
 
-	s[i+1] = '\0';
 	return s;
+}
+
+char *
+strcpy(char *dest, const char *src)
+{
+	size_t i;
+	
+	for (i = 0; i < strlen(src); i++)
+	{
+		dest[i] = src[i];
+	}
+
+	return dest;
 }
