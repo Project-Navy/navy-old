@@ -19,13 +19,14 @@
 DIRECTORY_GUARD=@mkdir -p $(@D)
 BUILD_DIRECTORY := build
 
-CC = x86_64-elf-gcc
-LD = x86_64-elf-ld
+CC = clang
 AS = nasm 
 
 ASFLAGS = -felf64
 
 CFLAGS =							\
+	-target x86_64-none-elf			\
+	-Os								\
 	-MD								\
 	-Wall							\
 	-Werror							\
@@ -40,7 +41,6 @@ CFLAGS =							\
 
 LDFLAGS	= 							\
 		  -static					\
- 		  -no-pie					\
 		  -z max-page-size=0x1000   \
 		  -ffreestanding			\
 		  -nostdlib					\

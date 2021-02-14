@@ -18,8 +18,6 @@
 # along with Navy.  If not, see <http://www.gnu.org/licenses/>.
 
 
-$(dirname $0)/patch-limine.sh
-
 make -C $(dirname $0)/../third-party/limine 
 make -C $(dirname $0)/../third-party/limine limine-install
 make -C $(dirname $0)/../third-party/echfs
