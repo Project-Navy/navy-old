@@ -32,7 +32,7 @@ CFLAGS =							\
 	-Werror							\
 	-Wextra							\
 	-I.								\
-	-Ithird-party/limine/stivale	\
+	-Ithird-party/stivale			\
 	-Ilibc							\
 	-ffreestanding	             	\
     -g			                 	\
