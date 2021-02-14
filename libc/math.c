@@ -17,14 +17,19 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _STDLIB_H_
-#define _STDLIB_H_
+#include <math.h>
+#include <stdlib.h>
 
-#include <stdint.h>
-#include <stddef.h>
+int64_t
+pow(int64_t base, int64_t power)
+{
+    int64_t i;
+    int64_t return_value = 1;
 
-char *itoa(int64_t, char *, uint16_t);
-void *memset(void *, int, size_t);
-int atoi(const char *nptr);
+    for(i = 0; i < power; i++)
+    {
+        return_value *= base;
+    }
 
-#endif /* !_STDLIB_H_ */
+    return return_value;
+}

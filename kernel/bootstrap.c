@@ -21,7 +21,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdlib.h>
+
 #include <libk/debug.h>
+#include <libk/bootinfo.h>
 
 #include "devices/serial.h"
 #include "kernel/macro.h"
@@ -46,9 +48,10 @@ struct stivale2_header header2 =
 };
 
 void 
-bootstrap(struct stivale2_struct *info)
+bootstrap(struct stivale2_struct *stivale)
 {
-    (void) info;
+    BootInfo info;
+
     init_serial(COM1);
 
     init_gdt();
@@ -60,7 +63,7 @@ bootstrap(struct stivale2_struct *info)
     init_idt();
     printk("%s IDT loaded !", SUCCESS);
 
-    __asm__("int $0");
+    stivale2_parse_header(&info, stivale);
 
     for (;;);
 }

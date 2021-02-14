@@ -17,14 +17,11 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _STDLIB_H_
-#define _STDLIB_H_
+#ifndef _LIBC_MATH_H_
+#define _LIBC_MATH_H_
 
 #include <stdint.h>
-#include <stddef.h>
 
-char *itoa(int64_t, char *, uint16_t);
-void *memset(void *, int, size_t);
-int atoi(const char *nptr);
+int64_t pow(int64_t, int64_t);
 
-#endif /* !_STDLIB_H_ */
+#endif /* !_LIBC_MATH_H_ */

@@ -17,14 +17,31 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _STDLIB_H_
-#define _STDLIB_H_
-
-#include <stdint.h>
 #include <stddef.h>
+#include <stivale2.h>
 
-char *itoa(int64_t, char *, uint16_t);
-void *memset(void *, int, size_t);
-int atoi(const char *nptr);
+#include <libk/bootinfo.h>
+#include <libk/debug.h>
 
-#endif /* !_STDLIB_H_ */
+void 
+stivale2_parse_header(BootInfo *self, struct stivale2_struct *stivale)
+{
+    struct stivale2_tag *tag = (struct stivale2_tag *) ((uint64_t) stivale->tags);
+
+    while (tag != NULL)
+    {
+        switch(tag->identifier)
+        {
+            case STIVALE2_STRUCT_TAG_RSDP_ID:
+                self->rsdp = (uint64_t) ((struct stivale2_struct_tag_rsdp *) tag)->rsdp;
+                break;
+            default:
+                printk("Unknown identifier: 0x%x", tag->identifier);
+
+        }
+
+        tag = (struct stivale2_tag *) ((uintptr_t) tag->next);
+    }
+}
+
+

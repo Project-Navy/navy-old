@@ -34,6 +34,8 @@ printk(const char *format, ...)
     char nbr[64];
 
     size_t padding = 0;
+    char padding_str[64];
+
     const char *ptr = format; 
     bool is_parsing = false;
 
@@ -59,8 +61,21 @@ printk(const char *format, ...)
             }
             else if (*ptr == '0')
             {
-                padding = *++ptr - '0';
+                size_t i = 0;
+                ptr++;
+
+                while (*ptr >= '0' && *ptr <= '9')
+                {
+                    padding_str[i++] = *ptr++;
+                }
+                
+                padding_str[i] = '\0';
+                padding = atoi(padding_str);
+                
+                is_parsing = true;
+                continue;
             }
+
             else if (*ptr == 's')
             {
                 puts_serial(COM1, (char *) va_arg(list, const char *));
@@ -81,7 +96,7 @@ printk(const char *format, ...)
             else if(*ptr == 'x')
             {
                 itoa(va_arg(list, int64_t), nbr, 16);
-                
+
                 while (padding && padding - strlen(nbr) > 0)
                 {
                     putc_serial(COM1, '0');

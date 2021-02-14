@@ -17,14 +17,17 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _STDLIB_H_
-#define _STDLIB_H_
+#ifndef _LIBK_BOOTINFO_H_
+#define _LIBK_BOOTINFO_H_
 
 #include <stdint.h>
-#include <stddef.h>
 
-char *itoa(int64_t, char *, uint16_t);
-void *memset(void *, int, size_t);
-int atoi(const char *nptr);
+typedef struct 
+{
+    uint64_t epoch;
+    uint64_t rsdp;
+} BootInfo;
 
-#endif /* !_STDLIB_H_ */
+void stivale2_parse_header(BootInfo *, struct stivale2_struct *);
+
+#endif /* !_LIBK_BOOTINFO_H_ */

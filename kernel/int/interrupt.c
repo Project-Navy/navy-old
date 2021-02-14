@@ -56,6 +56,18 @@ const char *exceptions[32] = {
     "Reserved"
 };
 
+void 
+dump_stack_frame(InterruptStackFrame *stackframe)
+{
+    printk("RAX=%016x RBX=%016x RCX=%016x", stackframe->rax, stackframe->rbx, stackframe->rcx);
+    printk("RDX=%016x RSI=%016x RDI=%016x", stackframe->rdx, stackframe->rsi, stackframe->rdi);
+    printk("R8=%016x R9=%016x R10=%016x  ", stackframe->r8, stackframe->r9, stackframe->r10);
+    printk("R11=%016x R12=%016x R13=%016x", stackframe->r11, stackframe->r12, stackframe->r13);
+    printk("R14=%016x R15=%016x RBP=%016x", stackframe->r14, stackframe->r15, stackframe->rbp);
+    printk("RIP=%016x CS=%016x FLG=%016x ", stackframe->rip, stackframe->cs, stackframe->rflags);
+    printk("RSP=%016x SS=%016x", stackframe->rsp, stackframe->ss);
+}
+
 void
 interrupts_handler(uintptr_t rsp)
 {
@@ -64,6 +76,9 @@ interrupts_handler(uintptr_t rsp)
 
     if (stackframe->intno < 32)
     {
+        printk("\n\n");
+        dump_stack_frame(stackframe);
+
         printk("%s %s (ERR: %d) ", ERROR, exceptions[stackframe->intno], 
                 stackframe->intno, stackframe->err);
     }

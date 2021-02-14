@@ -21,42 +21,49 @@
 #include <string.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdbool.h>
+#include <math.h>
 
 #include <libk/debug.h>
 
-char *
-itoa(int64_t value, char *str, uint16_t base)
+char * itoa( int64_t value, char * str, uint16_t base )
 {
-    size_t index = 0;
-    int8_t digit;
-
-    if (value < 0)
+    char * rc;
+    char * ptr;
+    char * low;
+    // Check for supported base.
+    if ( base < 2 || base > 36 )
     {
-        value *= -1;
+        *str = '\0';
+        return str;
     }
-
+    rc = ptr = str;
+    // Set '-' for negative decimals.
+    if ( value < 0 && base == 10 )
+    {
+        *ptr++ = '-';
+    }
+    // Remember where the numbers start.
+    low = ptr;
+    // The actual conversion.
     do
     {
-        digit = value % base;
+        // Modulo is negative for negative value. This trick makes abs() unnecessary.
+        *ptr++ = "zyxwvutsrqponmlkjihgfedcba9876543210123456789abcdefghijklmnopqrstuvwxyz"[35 + value % base];
         value /= base;
-        
-        if (digit < 0xa)
-        {
-            str[index++] = digit + '0';
-        }
-
-        else
-        {
-            str[index++] = (digit - 0xa) + 'a';
-        }
+    } while ( value );
+    // Terminating the string.
+    *ptr-- = '\0';
+    // Invert the numbers.
+    while ( low < ptr )
+    {
+        char tmp = *low;
+        *low++ = *ptr;
+        *ptr-- = tmp;
     }
-    while (value);
-    
-    str[index] = '\0';
-    str = strrev(str);
-    
-    return str;
+    return rc;
 }
+
 
 void *
 memset(void *s, int c, size_t n)
@@ -71,4 +78,33 @@ memset(void *s, int c, size_t n)
     }
 
     return s;
+}
+
+int
+atoi(const char *nptr)
+{
+    bool is_negative = false;
+    int64_t return_value = 0;
+    size_t index = 0;
+
+    if (nptr[index] == '-')
+    {
+        is_negative = true;
+        index++;
+    }
+
+    while (nptr[index] != '\0')
+    {
+        uint16_t power = strlen(nptr) - index - 1;
+
+        return_value += (nptr[index] - '0') * (uint32_t) pow(10, power);
+        index++;
+    }
+
+    if (is_negative)
+    {
+        return_value *= -1;
+    }
+
+    return return_value;
 }
