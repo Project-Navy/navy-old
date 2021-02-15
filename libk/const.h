@@ -17,31 +17,11 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBK_BOOTINFO_H_
-#define _LIBK_BOOTINFO_H_
+#ifndef _LIBK_CONST_H_
+#define _LIBK_CONST_H_
 
-#include <stdint.h>
+#define LIMIT_MEMORY_MAP_SIZE 64
 
-#include <libk/const.h>
-#include <libk/range.h>
+#define PAGE_SIZE 1024
 
-typedef struct 
-{
-    AddrRange range;
-    uint8_t type;
-} MmapEntry;
-
-typedef struct 
-{
-    uint64_t epoch;
-    uint64_t rsdp;
-
-    size_t memory_map_size;
-    size_t memory_usable; 
-    MmapEntry mmap[LIMIT_MEMORY_MAP_SIZE];
-} BootInfo;
-
-void stivale2_parse_header(BootInfo *, struct stivale2_struct *);
-void stivale2_parse_mmap(BootInfo *, struct stivale2_struct_tag_memmap *);
-
-#endif /* !_LIBK_BOOTINFO_H_ */
+#endif /* _LIBK_CONSTS_H_ */

@@ -64,7 +64,7 @@ dump_stack_frame(InterruptStackFrame *stackframe)
     printk("R8=%016x R9=%016x R10=%016x  ", stackframe->r8, stackframe->r9, stackframe->r10);
     printk("R11=%016x R12=%016x R13=%016x", stackframe->r11, stackframe->r12, stackframe->r13);
     printk("R14=%016x R15=%016x RBP=%016x", stackframe->r14, stackframe->r15, stackframe->rbp);
-    printk("\033[91mRIP=%016x\033[0m CS=%016x FLG=%016x ", stackframe->rip-1, stackframe->cs, stackframe->rflags);
+    printk("\033[91mRIP=%016x\033[0m CS=%016x FLG=%016x ", stackframe->rip, stackframe->cs, stackframe->rflags);
     printk("RSP=%016x SS=%016x", stackframe->rsp, stackframe->ss);
 }
 

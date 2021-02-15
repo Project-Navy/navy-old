@@ -17,31 +17,23 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBK_BOOTINFO_H_
-#define _LIBK_BOOTINFO_H_
-
-#include <stdint.h>
-
-#include <libk/const.h>
 #include <libk/range.h>
+#include <libk/const.h>
 
-typedef struct 
+
+bool 
+is_page_aligned(AddrRange self)
 {
-    AddrRange range;
-    uint8_t type;
-} MmapEntry;
+    bool is_aligned = (self.base % PAGE_SIZE == 0) && (self.length % PAGE_SIZE == 0);
+    return is_aligned;
+}
 
-typedef struct 
+void 
+align_range(AddrRange *self)
 {
-    uint64_t epoch;
-    uint64_t rsdp;
+    size_t align = self->base % PAGE_SIZE;
 
-    size_t memory_map_size;
-    size_t memory_usable; 
-    MmapEntry mmap[LIMIT_MEMORY_MAP_SIZE];
-} BootInfo;
-
-void stivale2_parse_header(BootInfo *, struct stivale2_struct *);
-void stivale2_parse_mmap(BootInfo *, struct stivale2_struct_tag_memmap *);
-
-#endif /* !_LIBK_BOOTINFO_H_ */
+    self->base -= align;
+    self->length += align;
+    self->length = PAGE_SIZE - self->length % PAGE_SIZE;
+}

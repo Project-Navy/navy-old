@@ -51,6 +51,8 @@ void
 bootstrap(struct stivale2_struct *stivale)
 {
     BootInfo info;
+    (void) info;
+    (void) stivale;
 
     init_serial(COM1);
 
@@ -64,8 +66,7 @@ bootstrap(struct stivale2_struct *stivale)
     printk("%s IDT loaded !", SUCCESS);
 
     stivale2_parse_header(&info, stivale);
-
-    __asm__("int $0");
+    printk("%s Total memory: %d MiB", SUCCESS, info.memory_usable / 1048576);
 
     for (;;);
 }
