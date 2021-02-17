@@ -32,5 +32,6 @@ typedef struct
 
 bool is_page_aligned(AddrRange);
 void align_range(AddrRange *);
+size_t range_count_page(AddrRange);
 
 #endif /* !_LIBK_RANGE_H_ */

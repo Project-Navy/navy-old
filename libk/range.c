@@ -37,3 +37,14 @@ align_range(AddrRange *self)
     self->length += align;
     self->length = PAGE_SIZE - self->length % PAGE_SIZE;
 }
+
+size_t 
+range_count_page(AddrRange self)
+{
+    if (!is_page_aligned(self))
+    {
+        align_range(&self);
+    }
+
+    return self.length / PAGE_SIZE;
+}

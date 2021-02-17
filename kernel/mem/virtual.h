@@ -41,6 +41,12 @@ typedef struct
     };
 } VirtualAddr;
 
+typedef enum 
+{
+    WRITE = 1 << 1,
+    USER  = 1 << 2,
+} Flag;
+
 typedef struct __attribute__((packed))
 {
     bool present: 1;
@@ -128,6 +134,6 @@ typedef struct __attribute__((packed))
     L1Entry entries[512];
 } L1PageTable;
 
-uintptr_t virtual_to_physical(uintptr_t);
+uintptr_t virtual_to_physical(L4PageTable *, uintptr_t);
 
 #endif /* _KERNEL_MEM_VIRTUAL_H_ */

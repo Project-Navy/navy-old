@@ -18,6 +18,10 @@
  */
 
 #include <libk/debug.h>
+#include <libk/const.h>
+#include <libk/range.h>
+
+#include "kernel/macro.h"
 
 #include "virtual.h"
 
@@ -26,40 +30,88 @@ static L3PageTable table3 __attribute__((aligned(4096)));
 static L2PageTable table2 __attribute__((aligned(4096)));
 static L1PageTable table1 __attribute__((aligned(4096)));
 
-uintptr_t 
-virtual_to_physical(uintptr_t vaddr_raw)
+
+void 
+init_paging(void)
+{
+    __unused(table4);
+    __unused(table3);
+    __unused(table2);
+    __unused(table1);
+}
+
+void 
+map_physical(L4PageTable *level4, AddrRange paddr, uintptr_t vaddr_raw, uint8_t flag)
 {
     VirtualAddr vaddr;
+    size_t page;
+
     L4Entry l4entry;
+
+    __unused(paddr);
+
+    for (page = 0; range_count_page(paddr); page++)
+    {
+        vaddr.raw = vaddr_raw + (page * PAGE_SIZE);
+
+        l4entry = level4->entries[vaddr.level4];
+        if (!l4entry.present)
+        {
+            l4entry.present = 1;
+            l4entry.write = flag & WRITE;
+            l4entry.user = flag & USER;
+            /* l4entry.ptr = */ 
+        }
+
+    }
+
+
+}
+
+uintptr_t 
+virtual_to_physical(L4PageTable *level4, uintptr_t vaddr_raw)
+{
+    VirtualAddr vaddr;
+
+    L4Entry l4entry;
+
+    L3PageTable *level3;
     L3Entry l3entry;
+
+    L2PageTable *level2;
     L2Entry l2entry;
+
+    L1PageTable *level1;
     L1Entry l1entry;
 
     vaddr.raw = vaddr_raw;
 
-    l4entry = table4.entries[vaddr.level4];
+    l4entry = level4->entries[vaddr.level4];
     if (!l4entry.present)
     {
         return 0;
     }
 
-    l3entry = table3.entries[vaddr.level3];
+    level3 = (L3PageTable *) l4entry.ptr;
+    l3entry = level3->entries[vaddr.level3];
     if (!l3entry.present)
     {
         return 0;
     }
 
-    l2entry = table2.entries[vaddr.level2];
+    level2 = (L2PageTable *) l3entry.ptr;
+    l2entry = level2->entries[vaddr.level2];
     if (!l2entry.present)
     {
         return 0;
     }
 
-    l1entry = table1.entries[vaddr.level1];
+    level1 = (L1PageTable *) l2entry.ptr;
+    l1entry = level1->entries[vaddr.level1];
     if (!l1entry.present)
     {
         return 0;
     }
 
-    return vaddr.offset + l1entry.ptr;
+    return l1entry.ptr + vaddr.offset;
 }
