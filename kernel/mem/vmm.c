@@ -24,9 +24,48 @@
 #include "kernel/macro.h"
 
 #include "vmm.h"
+#include "pmm.h"
 
 extern uintptr_t kernel_virtual_start;
 extern uintptr_t kernel_physical_start;
+
+static L4PageTable table4 __attribute__((aligned(PAGE_SIZE))) = {};
+static L3PageTable table3 __attribute__((aligned(PAGE_SIZE))) = {};
+static L2PageTable table2 __attribute__((aligned(PAGE_SIZE))) = {};
+static L1PageTable table1[512] __attribute__((aligned(PAGE_SIZE)));
+
+void 
+init_vmm(void)
+{
+    size_t i;
+    L4Entry level4;
+    L3Entry level3;
+    L2Entry level2;
+    
+    level4 = table4.entries[0];
+    level4.user = 0;
+    level4.write = 1;
+    level4.present = 1;
+    level4.ptr = (uintptr_t) &table3 / PAGE_SIZE;
+
+    level3 = table3.entries[0];
+    level3.user = 0;
+    level3.write = 1;
+    level3.present = 1;
+    level3.ptr = (uintptr_t) &table2 / PAGE_SIZE;
+
+    for (i = 0; i < 512; i++)
+    {
+        level2 = table2.entries[i];
+        level2.user = 0;
+        level2.write = 1;
+        level2.present = 1;
+        level2.ptr = (uintptr_t) &table1[i] / PAGE_SIZE;
+    }
+
+    load_cr3(&table4);
+    
+}
 
 void 
 map_physical(L4PageTable *level4, AddrRange paddr, uintptr_t vaddr_raw, uint8_t flag)
@@ -101,4 +140,10 @@ virtual_to_physical(L4PageTable *level4, uintptr_t vaddr_raw)
     }
 
     return l1entry.ptr + vaddr.offset;
+}
+
+void 
+load_cr3(L4PageTable *table)
+{
+    asm volatile("mov %0, %%cr3"::"r" ((uintptr_t) table));
 }

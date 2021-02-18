@@ -59,13 +59,26 @@ const char *exceptions[32] = {
 void 
 dump_stack_frame(InterruptStackFrame *stackframe)
 {
+
+    uint64_t cr0;
+    uint64_t cr2;
+    uint64_t cr3;
+    uint64_t cr4;
+
+    __asm__ volatile ("mov %%cr0, %0":"=r" (cr0));
+    __asm__ volatile ("mov %%cr2, %0":"=r" (cr2));
+    __asm__ volatile ("mov %%cr3, %0":"=r" (cr3));
+    __asm__ volatile ("mov %%cr4, %0":"=r" (cr4));
+
     printk("RAX=%016x RBX=%016x RCX=%016x", stackframe->rax, stackframe->rbx, stackframe->rcx);
     printk("RDX=%016x RSI=%016x RDI=%016x", stackframe->rdx, stackframe->rsi, stackframe->rdi);
-    printk("R8=%016x R9=%016x R10=%016x  ", stackframe->r8, stackframe->r9, stackframe->r10);
+    printk("R8=%016x   R9=%016x R10=%016x  ", stackframe->r8, stackframe->r9, stackframe->r10);
     printk("R11=%016x R12=%016x R13=%016x", stackframe->r11, stackframe->r12, stackframe->r13);
     printk("R14=%016x R15=%016x RBP=%016x", stackframe->r14, stackframe->r15, stackframe->rbp);
-    printk("\033[91mRIP=%016x\033[0m CS=%016x FLG=%016x ", stackframe->rip, stackframe->cs, stackframe->rflags);
-    printk("RSP=%016x SS=%016x", stackframe->rsp, stackframe->ss);
+    printk("\033[91mRIP=%016x\033[0m  CS=%016x FLG=%016x ", stackframe->rip, stackframe->cs, stackframe->rflags);
+    printk("RSP=%016x  SS=%016x", stackframe->rsp, stackframe->ss);
+    printk("\nCR0=%016x CR2=%016x CR3=%016x", cr0, cr2, cr3);
+    printk("CR4=%016x", cr4);
 }
 
 void
@@ -79,7 +92,7 @@ interrupts_handler(uintptr_t rsp)
         printk("\n\n");
         dump_stack_frame(stackframe);
 
-        printk("%s %s (ERR: %d) ", ERROR, exceptions[stackframe->intno], 
+        printk("%s %s (ERR: %d) (CODE: %d)", ERROR, exceptions[stackframe->intno], 
                 stackframe->intno, stackframe->err);
     }
 

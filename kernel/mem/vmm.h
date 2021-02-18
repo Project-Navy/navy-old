@@ -135,6 +135,7 @@ typedef struct __attribute__((packed))
 } L1PageTable;
 
 void init_vmm(void);
+void load_cr3(L4PageTable *);
 uintptr_t virtual_to_physical(L4PageTable *, uintptr_t);
 
 #endif /* _KERNEL_MEM_VIRTUAL_H_ */

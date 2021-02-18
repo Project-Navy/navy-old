@@ -29,6 +29,7 @@
 #include "kernel/macro.h"
 
 #include "kernel/mem/pmm.h"
+#include "kernel/mem/vmm.h"
 #include "kernel/mem/gdt.h"
 
 #include "kernel/int/idt.h"
@@ -68,6 +69,7 @@ bootstrap(struct stivale2_struct *stivale)
     printk("%s Total memory: %d MiB", SUCCESS, info.memory_usable / 1048576);
 
     init_pmm(&info);
+    init_vmm();
     __asm__("int $1");
 
     for (;;);
