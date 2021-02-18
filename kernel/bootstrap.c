@@ -28,6 +28,7 @@
 #include "devices/serial.h"
 #include "kernel/macro.h"
 
+#include "kernel/mem/pmm.h"
 #include "kernel/mem/gdt.h"
 
 #include "kernel/int/idt.h"
@@ -51,8 +52,6 @@ void
 bootstrap(struct stivale2_struct *stivale)
 {
     BootInfo info;
-    (void) info;
-    (void) stivale;
 
     init_serial(COM1);
 
@@ -67,6 +66,9 @@ bootstrap(struct stivale2_struct *stivale)
 
     stivale2_parse_header(&info, stivale);
     printk("%s Total memory: %d MiB", SUCCESS, info.memory_usable / 1048576);
+
+    init_pmm(&info);
+    __asm__("int $1");
 
     for (;;);
 }

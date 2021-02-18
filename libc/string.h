@@ -25,5 +25,6 @@
 char *strrev(char *);
 size_t strlen(const char *);
 char *strcpy(char *, const char *);
+void *memset(void *, int, size_t);
 
 #endif /* !_LIBC_STRING_H_ */

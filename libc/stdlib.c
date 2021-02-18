@@ -87,22 +87,6 @@ char * itoa(int64_t value, char *str, uint16_t base)
     return str;
 }
 
-
-void *
-memset(void *s, int c, size_t n)
-{
-    if (n)
-    {
-        char *d = (char *) s;
-        do 
-        {
-            *d++ = c;
-        } while(--n);
-    }
-
-    return s;
-}
-
 int
 atoi(const char *nptr)
 {

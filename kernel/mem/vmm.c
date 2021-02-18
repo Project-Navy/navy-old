@@ -23,22 +23,10 @@
 
 #include "kernel/macro.h"
 
-#include "virtual.h"
+#include "vmm.h"
 
-static L4PageTable table4 __attribute__((aligned(4096)));
-static L3PageTable table3 __attribute__((aligned(4096)));
-static L2PageTable table2 __attribute__((aligned(4096)));
-static L1PageTable table1 __attribute__((aligned(4096)));
-
-
-void 
-init_paging(void)
-{
-    __unused(table4);
-    __unused(table3);
-    __unused(table2);
-    __unused(table1);
-}
+extern uintptr_t kernel_virtual_start;
+extern uintptr_t kernel_physical_start;
 
 void 
 map_physical(L4PageTable *level4, AddrRange paddr, uintptr_t vaddr_raw, uint8_t flag)
@@ -59,12 +47,11 @@ map_physical(L4PageTable *level4, AddrRange paddr, uintptr_t vaddr_raw, uint8_t 
         {
             l4entry.present = 1;
             l4entry.write = flag & WRITE;
-            l4entry.user = flag & USER;
+            l4entry.user = flag & USER_PERM;
             /* l4entry.ptr = */ 
         }
 
     }
-
 
 }
 

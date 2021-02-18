@@ -59,3 +59,18 @@ strcpy(char *dest, const char *src)
 
 	return dest;
 }
+
+void *
+memset(void *s, int c, size_t n)
+{
+    if (n)
+    {
+        char *d = (char *) s;
+        do 
+        {
+            *d++ = c;
+        } while(--n);
+    }
+
+    return s;
+}

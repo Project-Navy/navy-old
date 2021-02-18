@@ -17,32 +17,25 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBK_BOOTINFO_H_
-#define _LIBK_BOOTINFO_H_
-
-#include <stdint.h>
-#include <stivale2.h>
+#include <stddef.h>
+#include <string.h>
 
 #include <libk/const.h>
-#include <libk/range.h>
+#include "pmm.h"
 
-typedef struct 
+static uint8_t *bitmap;
+
+void 
+init_pmm(BootInfo *info)
 {
-    AddrRange range;
-    uint8_t type;
-} MmapEntry;
+    size_t mem = info->memory_usable;
+    size_t max_pages = (mem * 1024) / PAGE_SIZE;
+    size_t bitmap_size = max_pages / 8;
 
-typedef struct 
-{
-    uint64_t epoch;
-    uint64_t rsdp;
+    if (bitmap_size % 8)
+    {
+        bitmap_size += 8 - (bitmap_size % 8);
+    }
 
-    size_t memory_map_size;
-    size_t memory_usable; 
-    MmapEntry mmap[LIMIT_MEMORY_MAP_SIZE];
-} BootInfo;
-
-void stivale2_parse_header(BootInfo *, struct stivale2_struct *);
-void stivale2_parse_mmap(BootInfo *, struct stivale2_struct_tag_memmap *);
-
-#endif /* !_LIBK_BOOTINFO_H_ */
+    // TODO: Find an address for the bitmap
+}

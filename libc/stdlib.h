@@ -24,7 +24,6 @@
 #include <stddef.h>
 
 char *itoa(int64_t, char *, uint16_t);
-void *memset(void *, int, size_t);
 int atoi(const char *nptr);
 
 #endif /* !_STDLIB_H_ */

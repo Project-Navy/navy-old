@@ -19,8 +19,8 @@
 
 #include <stddef.h>
 #include <libk/debug.h>
+#include <string.h>
 
-#include "libc/stdlib.h"
 #include "kernel/int/idt.h"
 
 extern uintptr_t __interrupt_vector[];

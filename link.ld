@@ -4,6 +4,10 @@ SECTIONS
 {
     . = 0xffffffff80100000;
 
+
+    kernel_virtual_start = .;
+    kernel_physical_start = . - 0xffffffff80000000;
+
     .stivalehdr ALIGN(4K) :
     {
         KEEP(*(.stivalehdr))
@@ -34,4 +38,7 @@ SECTIONS
         KEEP(*(COMMON))
         KEEP(*(.bss*))
     }
+
+    kernel_virtual_end = .;
+    kernel_physical_end = . - 0xffffffff80000000;
 }
