@@ -22,12 +22,11 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-#include <math.h>
-
 #include <libk/debug.h>
 #include <libk/bootinfo.h>
 
 #include "devices/serial.h"
+#include "devices/framebuffer.h"
 #include "kernel/macro.h"
 
 #include "kernel/mem/pmm.h"
@@ -66,39 +65,27 @@ void
 bootstrap(struct stivale2_struct *stivale)
 {
     BootInfo info;
-    uintptr_t x;
-    uintptr_t z = 1;
-    uintptr_t y;
-
-    init_serial(COM1);
-
-    init_gdt();
-    printk("%s GDT loaded !", SUCCESS);
-
-    init_pic();
-    printk("%s PIC initialised !", SUCCESS);
-
-    init_idt();
-    printk("%s IDT loaded !", SUCCESS);
 
     stivale2_parse_header(&info, stivale);
     printk("%s Total memory: %d MiB", SUCCESS, info.memory_usable / 1048576);
 
-    size_t index;
+    init_serial(COM1);
+    clear_fb(info.framebuffer, DEFAULT_BG);
 
-    for(;;)
-    {
-        for (x = 0; x < info.framebuffer->framebuffer_width; x++)
-        {
-            for (y = 0; y < info.framebuffer->framebuffer_height; y++)
-            {
-                index = (x + (info.framebuffer->framebuffer_pitch / sizeof(uint32_t)) * y);
-                ((uint32_t *) info.framebuffer->framebuffer_addr)[index] = (x ^ y) * z;
-            }
-        }
+    init_gdt();
+    printk("%s GDT loaded !", SUCCESS);
+    puts_fb(info.framebuffer, "[ + ]", 10, 10, SUCCESS_FG);
+    puts_fb(info.framebuffer, "GDT loaded !", 56, 10, DEFAULT_FG);
 
-        z++;
-    }
+    init_pic();
+    printk("%s PIC initialised !", SUCCESS);
+    puts_fb(info.framebuffer, "[ + ]", 10, 26, SUCCESS_FG);
+    puts_fb(info.framebuffer, "PIC initialised !", 56, 26, DEFAULT_FG);
+
+    init_idt();
+    printk("%s IDT loaded !", SUCCESS);
+    puts_fb(info.framebuffer, "[ + ]", 10, 42, SUCCESS_FG);
+    puts_fb(info.framebuffer, "IDT loaded !", 56, 42, DEFAULT_FG);
 
     __asm__("int $1");
 

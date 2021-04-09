@@ -17,20 +17,23 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICES_SERIAL_H_
-#define _DEVICES_SERIAL_H_
+#ifndef _DEVICES_FRAMEBUFFER_H_
+#define _DEVICES_FRAMEBUFFER_H_
 
-enum PORT
-{
-    COM1 = 0x3f8,
-    COM2 = 0x2f8,
-    COM3 = 0x3e8,
-    COM4 = 0x2e8
-};
+#define DEFAULT_BG 0x0a0e14
+#define DEFAULT_FG 0xb3b1ad
 
-void init_serial(enum PORT);
-void putc_serial(enum PORT, char);
-void puts_serial(enum PORT, const char *);
+#define SUCCESS_FG 0xc2d94c
 
+#include <stdint.h>
+#include <stddef.h>
+#include <stivale2.h>
 
-#endif /* !_DEVICES_SERIAL_H_ */
+typedef struct stivale2_struct_tag_framebuffer Framebuffer;
+
+void draw_pixel_fb(Framebuffer *, size_t, size_t, uint32_t);
+void clear_fb(Framebuffer *, uint32_t);
+void putc_fb(Framebuffer *, uint8_t, size_t, size_t, uint32_t);
+void puts_fb(Framebuffer *, const char *, size_t, size_t, uint32_t);
+
+#endif /* !_DEVICES_FRAMEBUFFER_H_ */

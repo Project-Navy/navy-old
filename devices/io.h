@@ -17,8 +17,8 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICE_IO_H_
-#define _DEVICE_IO_H_
+#ifndef _DEVICES_IO_H_
+#define _DEVICES_IO_H_
 
 #include <stdint.h>
 
@@ -30,4 +30,4 @@ void outd(uint16_t port, uint8_t val);
 uint32_t ind(uint16_t port);
 void io_wait(void);
 
-#endif /* !_DEVICE_IO_H_ */
+#endif /* !_DEVICES_IO_H_ */
