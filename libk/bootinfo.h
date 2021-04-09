@@ -34,8 +34,10 @@ typedef struct
 
 typedef struct 
 {
-    uint64_t epoch;
-    uint64_t rsdp;
+    uintptr_t epoch;
+    uintptr_t rsdp;
+
+    struct stivale2_struct_tag_framebuffer *framebuffer;
 
     size_t memory_map_size;
     size_t memory_usable; 

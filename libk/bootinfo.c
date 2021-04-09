@@ -72,10 +72,13 @@ stivale2_parse_header(BootInfo *self, struct stivale2_struct *stivale)
         switch(tag->identifier)
         {
             case STIVALE2_STRUCT_TAG_RSDP_ID:
-                self->rsdp = (uint64_t) ((struct stivale2_struct_tag_rsdp *) tag)->rsdp;
+                self->rsdp = (uintptr_t) ((struct stivale2_struct_tag_rsdp *) tag)->rsdp;
                 break;
             case STIVALE2_STRUCT_TAG_EPOCH_ID:
-                self->epoch = (uint64_t) ((struct stivale2_struct_tag_epoch *) tag)->epoch;
+                self->epoch = (uintptr_t) ((struct stivale2_struct_tag_epoch *) tag)->epoch;
+                break;
+            case STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID:
+                self->framebuffer = (struct stivale2_struct_tag_framebuffer *) tag;
                 break;
             case STIVALE2_STRUCT_TAG_MEMMAP_ID:
                 stivale2_parse_mmap(self, (struct stivale2_struct_tag_memmap *) tag);
