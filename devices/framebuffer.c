@@ -24,9 +24,10 @@
 #include "framebuffer.h"
 #include "serial.h"
 
-#include "libk/font.h"
 #include "libk/escape-state.h"
-#include "libk/colorscheme.h"
+
+#include "kernel/font.h"
+#include "kernel/colorscheme.h"
 
 FbCFG *config;
 EscapeState state = OFF;

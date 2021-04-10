@@ -25,7 +25,6 @@
 
 #include <libk/debug.h>
 #include <libk/bootinfo.h>
-#include <libk/colorscheme.h>
 
 #include "devices/serial.h"
 #include "devices/framebuffer.h"
@@ -36,6 +35,8 @@
 
 #include "kernel/int/idt.h"
 #include "kernel/int/pic.h"
+
+#include "kernel/colorscheme.h"
 
 typedef uint8_t stack[4096];
 static stack stacks[10] = { 0 };
