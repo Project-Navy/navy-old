@@ -89,7 +89,7 @@ interrupts_handler(uintptr_t rsp)
 
     if (stackframe->intno < 32)
     {
-        printk("\n\n");
+        printk("\n");
         dump_stack_frame(stackframe);
 
         printk("%s %s (ERR: %d) (CODE: %d)", ERROR, exceptions[stackframe->intno], 

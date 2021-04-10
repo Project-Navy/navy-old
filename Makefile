@@ -35,7 +35,7 @@ CFLAGS =							\
 	-Ithird-party/stivale			\
 	-Ilibc							\
 	-ffreestanding	             	\
-    -g			                 	\
+    -ggdb			                \
     -nostdlib			         	\
 	-mcmodel=kernel                 \
 	-mno-sse
@@ -80,6 +80,9 @@ all: $(TARGET)
 
 run: clean all
 	qemu-system-x86_64 -drive format=raw,file=navy.img -serial stdio -m 1024M --enable-kvm
+
+run-debug: clean all
+	qemu-system-x86_64 -drive format=raw,file=navy.img -serial stdio -m 1024M --enable-kvm -s -S
 
 clean:
 	rm -f kernel.elf

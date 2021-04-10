@@ -17,121 +17,23 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <stdbool.h>
 #include <stdarg.h>
-#include <stdint.h>
-#include <stddef.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <string.h>
 #include <libk/debug.h>
 
 #include "devices/serial.h"
 
-void 
-printk(const char *format, ...)
+void printk(const char *format, ...)
 {
-    va_list list;
-    char nbr[64];
+    va_list ap;
+    char str[4096] = {0};
+    va_start(ap, format);
 
-    size_t padding = 0;
-    char padding_str[64];
-
-    const char *ptr = format; 
-    bool is_parsing = false;
-
-    va_start(list, format);
-
-    while (*ptr)
-    {
-        memset(nbr, 0, 64);
-        if (*ptr == '%')
-        {
-            is_parsing = true;
-            ptr++;
-            continue;
-        }
-        
-        if (is_parsing)
-        {
-            is_parsing = false;
-            if (*ptr == '%') 
-            {
-                putc_serial(COM1, '%');
-                ptr++;
-            }
-            else if (*ptr == '0')
-            {
-                size_t i = 0;
-                ptr++;
-
-                while (*ptr >= '0' && *ptr <= '9')
-                {
-                    padding_str[i++] = *ptr++;
-                }
-                
-                padding_str[i] = '\0';
-                padding = atoi(padding_str);
-                
-                is_parsing = true;
-                continue;
-            }
-
-            else if (*ptr == 's')
-            {
-                puts_serial(COM1, (char *) va_arg(list, const char *));
-            }
-            else if (*ptr == 'd')
-            {
-                itoa(va_arg(list, int64_t), nbr, 10);
-
-                while (padding && padding - strlen(nbr) > 0)
-                {
-                    putc_serial(COM1, '0');
-                    padding--;
-                }
-
-                padding = 0;
-                puts_serial(COM1, nbr);
-            }
-            else if(*ptr == 'x')
-            {
-                itoa(va_arg(list, int64_t), nbr, 16);
-
-                while (padding && padding - strlen(nbr) > 0)
-                {
-                    putc_serial(COM1, '0');
-                    padding--;
-                }
-
-                padding = 0; 
-                puts_serial(COM1, nbr);
-            }
-            else if(*ptr == 'b')
-            {
-                itoa(va_arg(list, int64_t), nbr, 2);
-                
-                while (padding && padding - strlen(nbr) > 0)
-                {
-                    putc_serial(COM1, '0');
-                    padding--;
-                }
-
-                padding = 0; 
-                puts_serial(COM1, nbr);
-            }
-            else if(*ptr == 'c')
-            {
-                putc_serial(COM1, (char) va_arg(list, int));
-            }
-        }
-        else 
-        {
-            putc_serial(COM1, *ptr);
-        }
-
-        ptr++;
-    }
-
+    vsnprintf(str, 4096, format, ap);
+    puts_serial(COM1, str);
     putc_serial(COM1, '\n');
 }
 

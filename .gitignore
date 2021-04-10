@@ -1,4 +1,5 @@
 .vscode/
+.ccls-cache/
 build/
 kernel.elf
 navy.img

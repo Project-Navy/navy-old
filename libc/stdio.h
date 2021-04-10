@@ -17,16 +17,12 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _LIBC_STRING_H_
-#define _LIBC_STRING_H_ 
+#ifndef _LIBC_STDIO_H_
+#define _LIBC_STDIO_H_
 
 #include <stddef.h>
+#include <stdarg.h>
 
-char *strrev(char *);
-size_t strlen(const char *);
-char *strcpy(char *, const char *);
-void *memset(void *, int, size_t);
-char *strncat(char *, const char *, size_t);
-char *strcat(char *, const char *);
+int vsnprintf(char *, size_t, const char *, va_list);
 
-#endif /* !_LIBC_STRING_H_ */
+#endif /* !_LIBC_STDIO_H_ */
