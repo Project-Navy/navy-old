@@ -28,8 +28,6 @@
 
 #include <stdarg.h>
 
-void printk(const char *, ...);
-void printkk(const char *, ...);
 void __assert(const char *, const char *, const char *, int);
 
 #endif /* !_LIBK_DEBUG_H_ */

@@ -67,26 +67,20 @@ bootstrap(struct stivale2_struct *stivale)
     BootInfo info;
 
     stivale2_parse_header(&info, stivale);
-    printk("%s Total memory: %d MiB", SUCCESS, info.memory_usable / 1048576);
+    init_fb(info.framebuffer, 10, DEFAULT_FG, DEFAULT_BG);
+    printf_serial("%s Total memory: %d MiB", SUCCESS, info.memory_usable / 1048576);
 
     init_serial(COM1);
-    clear_fb(info.framebuffer, DEFAULT_BG);
 
     init_gdt();
-    printk("%s GDT loaded !", SUCCESS);
-    puts_fb(info.framebuffer, "[ + ]", 10, 10, SUCCESS_FG);
-    puts_fb(info.framebuffer, "GDT loaded !", 56, 10, DEFAULT_FG);
+    printf_serial("%s GDT loaded !", SUCCESS);
 
     init_pic();
-    printk("%s PIC initialised !", SUCCESS);
-    puts_fb(info.framebuffer, "[ + ]", 10, 26, SUCCESS_FG);
-    puts_fb(info.framebuffer, "PIC initialised !", 56, 26, DEFAULT_FG);
+    printf_serial("%s PIC initialised !", SUCCESS);
 
     init_idt();
-    printk("%s IDT loaded !", SUCCESS);
-    puts_fb(info.framebuffer, "[ + ]", 10, 42, SUCCESS_FG);
-    puts_fb(info.framebuffer, "IDT loaded !", 56, 42, DEFAULT_FG);
-
+    printf_serial("%s IDT loaded !", SUCCESS);
+    
     __asm__("int $1");
 
     for (;;);

@@ -31,6 +31,6 @@ enum PORT
 void init_serial(enum PORT);
 void putc_serial(enum PORT, char);
 void puts_serial(enum PORT, const char *);
-
+void printf_serial(const char *, ...);
 
 #endif /* !_DEVICES_SERIAL_H_ */

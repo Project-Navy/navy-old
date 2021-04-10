@@ -50,14 +50,23 @@ strrev(char *s)
 char *
 strcpy(char *dest, const char *src)
 {
-	size_t i;
-	
-	for (i = 0; i < strlen(src); i++)
+    return (char *) memcpy(dest, src, strlen(src));
+}
+
+void *
+memcpy(void *dest, const void *src, size_t n)
+{
+    size_t i;
+    char *cdest = (char *) dest;
+    char *csrc = (char *) src;
+    
+	for (i = 0; i < n; i++)
 	{
-		dest[i] = src[i];
+		cdest[i] = csrc[i];
 	}
 
-	return dest;
+    return (void *) cdest;
+
 }
 
 void *

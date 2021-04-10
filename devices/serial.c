@@ -18,6 +18,8 @@
  */
 
 #include <stddef.h>
+#include <stdio.h>
+#include <stdarg.h>
 
 #include "devices/serial.h"
 #include "devices/io.h"
@@ -57,4 +59,17 @@ puts_serial(enum PORT port, const char *s)
     {
         putc_serial(port, s[i]);
     }
+}
+
+void printf_serial(const char *format, ...)
+{
+    va_list ap;
+    char str[4096] = {0};
+    va_start(ap, format);
+
+    vsnprintf(str, 4096, format, ap);
+    puts_serial(COM1, str);
+    putc_serial(COM1, '\n');
+
+    va_end(ap);
 }

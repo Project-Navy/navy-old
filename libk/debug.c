@@ -18,24 +18,11 @@
  */
 
 #include <stdarg.h>
-#include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-#include <string.h>
 #include <libk/debug.h>
 
 #include "devices/serial.h"
 
-void printk(const char *format, ...)
-{
-    va_list ap;
-    char str[4096] = {0};
-    va_start(ap, format);
-
-    vsnprintf(str, 4096, format, ap);
-    puts_serial(COM1, str);
-    putc_serial(COM1, '\n');
-}
 
 void 
 __assert(const char *expr, const char *file, const char *func, int line)

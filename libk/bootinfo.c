@@ -21,7 +21,7 @@
 #include <stivale2.h>
 
 #include <libk/bootinfo.h>
-#include <libk/debug.h>
+#include "devices/serial.h"
 
 void 
 stivale2_parse_mmap(BootInfo *self, struct stivale2_struct_tag_memmap *mmap)
@@ -83,7 +83,7 @@ stivale2_parse_header(BootInfo *self, struct stivale2_struct *stivale)
             case STIVALE2_STRUCT_TAG_MEMMAP_ID:
                 stivale2_parse_mmap(self, (struct stivale2_struct_tag_memmap *) tag);
             default:
-                printk("Unknown identifier: 0x%x", tag->identifier);
+                printf_serial("Unknown identifier: 0x%x", tag->identifier);
         }
 
         tag = (struct stivale2_tag *) ((uintptr_t) tag->next);

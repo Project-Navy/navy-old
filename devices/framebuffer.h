@@ -31,9 +31,23 @@
 
 typedef struct stivale2_struct_tag_framebuffer Framebuffer;
 
+typedef struct
+{
+    uint32_t fg;
+    uint32_t bg;
+
+    size_t x;
+    size_t y;
+    size_t defaultX;
+    
+    Framebuffer *fb;
+} FbCFG;
+
 void draw_pixel_fb(Framebuffer *, size_t, size_t, uint32_t);
-void clear_fb(Framebuffer *, uint32_t);
-void putc_fb(Framebuffer *, uint8_t, size_t, size_t, uint32_t);
-void puts_fb(Framebuffer *, const char *, size_t, size_t, uint32_t);
+void clear_fb(Framebuffer *);
+void putc_fb(Framebuffer *, uint8_t, size_t *, size_t *, uint32_t);
+void puts_fb(Framebuffer *, const char *, size_t *, size_t *, size_t, uint32_t);
+void init_fb(Framebuffer *, size_t, uint32_t, uint32_t);
+void printf_fb(const char *, ...);
 
 #endif /* !_DEVICES_FRAMEBUFFER_H_ */

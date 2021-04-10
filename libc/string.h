@@ -26,6 +26,7 @@ char *strrev(char *);
 size_t strlen(const char *);
 char *strcpy(char *, const char *);
 void *memset(void *, int, size_t);
+void *memcpy(void *, const void *, size_t);
 char *strncat(char *, const char *, size_t);
 char *strcat(char *, const char *);
 
