@@ -18,13 +18,21 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "framebuffer.h"
-#include "libk/font.h"
+#include "serial.h"
 
-#define FONT_SPACE_Y (FONT_HEIGHT * 2)
+#include "libk/font.h"
+#include "libk/escape-state.h"
+#include "libk/colorscheme.h"
+
 FbCFG *config;
+EscapeState state = OFF;
+
+size_t ptr = 0;
+char nbr[3];
 
 void
 init_fb(Framebuffer *self, size_t init_x, uint32_t fg, uint32_t bg)
@@ -41,16 +49,62 @@ draw_pixel_fb(Framebuffer *self, size_t x, size_t y, uint32_t color)
 }
 
 void
-putc_fb(Framebuffer *self, uint8_t c, size_t *curx, size_t *cury, uint32_t color)
+putc_fb(Framebuffer *self, uint8_t c, size_t *curx, size_t *cury)
 {
     size_t x;
     size_t y;
     size_t offset;
 
-    if (c == '\n')
+    switch (c)
     {
-        *cury += FONT_SPACE_Y;
-        *curx = config->defaultX - FONT_HEIGHT;
+        case '\n':
+        {
+            *cury += FONT_SPACE_Y;
+            *curx = config->defaultX - FONT_WIDTH;
+            return;
+        }
+
+        case '\033':
+        {
+            state = PRE_PARSING; 
+            return;
+        }
+    }
+
+    if (state == PARSING)
+    {
+        if (c != ';' && c != 'm')
+        {
+            nbr[ptr++] = c;
+            return;
+        }
+
+        else {}
+    }
+
+    if (state == PRE_PARSING && c == '[')
+    {
+        state = PARSING;
+        return;
+    }
+
+    if (state == PARSING && c == 'm')
+    {
+        int digit = atoi(nbr);
+        state = OFF;
+
+        if (digit == 0)
+        {
+            config->fg = DEFAULT_FG;
+            config->bg = DEFAULT_BG;
+        }
+
+        if (digit > 29 && digit < 38)
+        {
+            config->fg = colorscheme[digit-30];
+        }
+        
+        memset(nbr, 0, 3);
         return;
     }
 
@@ -58,18 +112,21 @@ putc_fb(Framebuffer *self, uint8_t c, size_t *curx, size_t *cury, uint32_t color
     {
         for (y = 0; y < FONT_HEIGHT; y++)
         {
-            if ((font[c][y] >> x) & 1)
+            if ((font[c][y] >> (FONT_WIDTH - x)) & 1)
             {
                 offset = ((y + *cury) * self->framebuffer_pitch) + ((x + *curx) * 4);
-                *(uint32_t *)((uintptr_t) self->framebuffer_addr + offset) = color;
+                *(uint32_t *)(self->framebuffer_addr + offset) = config->fg;
             }
+
         }
     }
+
+    *curx += FONT_WIDTH;
 }
 
 
 void
-puts_fb(Framebuffer *self, const char *s, size_t *x, size_t *y, size_t defaultX, uint32_t color)
+puts_fb(Framebuffer *self, const char *s, size_t *x, size_t *y, size_t defaultX)
 {
     size_t i;
 
@@ -81,8 +138,7 @@ puts_fb(Framebuffer *self, const char *s, size_t *x, size_t *y, size_t defaultX,
             *x = defaultX;
         }
 
-        putc_fb(self, s[i], x, y, color);
-        *x += FONT_HEIGHT;
+        putc_fb(self, s[i], x, y);
     }
 }
 
@@ -109,7 +165,7 @@ printf_fb(const char *format, ...)
     va_start(ap, format);
 
     vsnprintf(s, 4096, format, ap);
-    puts_fb(config->fb, s, &config->x, &config->y, config->defaultX, config->fg);
+    puts_fb(config->fb, s, &config->x, &config->y, config->defaultX);
 
     config->y += FONT_SPACE_Y;
     config->x = config->defaultX; 

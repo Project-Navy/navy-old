@@ -85,10 +85,10 @@ dump_stack_frame(InterruptStackFrame *stackframe)
 
     printf_fb("RAX=%016x RBX=%016x RCX=%016x", stackframe->rax, stackframe->rbx, stackframe->rcx);
     printf_fb("RDX=%016x RSI=%016x RDI=%016x", stackframe->rdx, stackframe->rsi, stackframe->rdi);
-    printf_fb("R8=%016x   R9=%016x R10=%016x  ", stackframe->r8, stackframe->r9, stackframe->r10);
+    printf_fb(" R8=%016x  R9=%016x R10=%016x  ", stackframe->r8, stackframe->r9, stackframe->r10);
     printf_fb("R11=%016x R12=%016x R13=%016x", stackframe->r11, stackframe->r12, stackframe->r13);
     printf_fb("R14=%016x R15=%016x RBP=%016x", stackframe->r14, stackframe->r15, stackframe->rbp);
-    printf_fb("RIP=%016x CS=%016x FLG=%016x ", stackframe->rip, stackframe->cs, stackframe->rflags);
+    printf_fb("\033[31mRIP=%016x\033[0m  CS=%016x FLG=%016x ", stackframe->rip, stackframe->cs, stackframe->rflags);
     printf_fb("RSP=%016x  SS=%016x", stackframe->rsp, stackframe->ss);
     printf_fb("\nCR0=%016x CR2=%016x CR3=%016x", cr0, cr2, cr3);
     printf_fb("CR4=%016x", cr4);
@@ -97,7 +97,7 @@ dump_stack_frame(InterruptStackFrame *stackframe)
 void
 interrupts_handler(uintptr_t rsp)
 {
-    printf_fb(" ==== NAVY REPORT === ");
+    printf_fb("\n ==== NAVY REPORT === ");
     InterruptStackFrame *stackframe = (InterruptStackFrame *) rsp;
     PIC_sendEOI(stackframe->intno);
 
@@ -110,7 +110,7 @@ interrupts_handler(uintptr_t rsp)
                 stackframe->intno, stackframe->err);
 
 
-        printf_fb("[-] %s (ERR: %d) (CODE: %d)", exceptions[stackframe->intno], 
+        printf_fb("%s %s (ERR: %d) (CODE: %d)", ERROR, exceptions[stackframe->intno], 
                 stackframe->intno, stackframe->err);
     }
 

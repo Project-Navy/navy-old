@@ -19,11 +19,13 @@
 
 #include <stivale2.h>
 #include <stdint.h>
+#include <string.h>
 #include <stddef.h>
 #include <stdlib.h>
 
 #include <libk/debug.h>
 #include <libk/bootinfo.h>
+#include <libk/colorscheme.h>
 
 #include "devices/serial.h"
 #include "devices/framebuffer.h"
@@ -39,7 +41,6 @@ typedef uint8_t stack[4096];
 static stack stacks[10] = { 0 };
 
 void bootstrap(struct stivale2_struct *);
-
 
 struct stivale2_header_tag_framebuffer framebuffer_request = {
     .tag = {
@@ -74,14 +75,16 @@ bootstrap(struct stivale2_struct *stivale)
 
     init_gdt();
     printf_serial("%s GDT loaded !", SUCCESS);
+    printf_fb("%s PIC initialised !", SUCCESS);
 
     init_pic();
     printf_serial("%s PIC initialised !", SUCCESS);
+    printf_fb("%s PIC initialised !", SUCCESS);
 
     init_idt();
     printf_serial("%s IDT loaded !", SUCCESS);
-    
-    __asm__("int $1");
+    printf_fb("%s IDT loaded !", SUCCESS);
 
+    __asm__("int $1");
     for (;;);
 }

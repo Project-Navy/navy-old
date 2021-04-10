@@ -17,33 +17,14 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef _DEVICES_FRAMEBUFFER_H_
-#define _DEVICES_FRAMEBUFFER_H_
+#ifndef _LIBK_ESCAPE_STATE_H_
+#define _LIBK_ESCAPE_STATE_H_
 
-
-#include <stdint.h>
-#include <stddef.h>
-#include <stivale2.h>
-
-typedef struct stivale2_struct_tag_framebuffer Framebuffer;
-
-typedef struct
+typedef enum
 {
-    uint32_t fg;
-    uint32_t bg;
+    PRE_PARSING,
+    PARSING,
+    OFF
+} EscapeState;
 
-    size_t x;
-    size_t y;
-    size_t defaultX;
-    
-    Framebuffer *fb;
-} FbCFG;
-
-void draw_pixel_fb(Framebuffer *, size_t, size_t, uint32_t);
-void clear_fb(Framebuffer *);
-void putc_fb(Framebuffer *, uint8_t, size_t *, size_t *);
-void puts_fb(Framebuffer *, const char *, size_t *, size_t *, size_t);
-void init_fb(Framebuffer *, size_t, uint32_t, uint32_t);
-void printf_fb(const char *, ...);
-
-#endif /* !_DEVICES_FRAMEBUFFER_H_ */
+#endif /* !_LIBK_ESCAPE_STATE_H_ */
