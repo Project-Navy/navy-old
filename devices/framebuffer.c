@@ -105,6 +105,7 @@ putc_fb(Framebuffer *self, uint8_t c, size_t *curx, size_t *cury)
             config->fg = colorscheme[digit-30];
         }
         
+        ptr = 0;
         memset(nbr, 0, 3);
         return;
     }
