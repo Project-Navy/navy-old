@@ -30,7 +30,6 @@
 #include "devices/framebuffer.h"
 #include "kernel/macro.h"
 
-#include "kernel/mem/pmm.h"
 #include "kernel/mem/gdt.h"
 
 #include "kernel/int/idt.h"
@@ -86,6 +85,5 @@ bootstrap(struct stivale2_struct *stivale)
     printf_serial("%s IDT loaded !", SUCCESS);
     printf_fb("%s IDT loaded !", SUCCESS);
 
-    __asm__("int $1");
     for (;;);
 }
