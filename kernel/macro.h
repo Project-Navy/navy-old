@@ -21,6 +21,6 @@
 #define _MACRO_H_
 
 #define __unused(x) ((void) x)
-#define __align(x) ((x + 0x1000 - 1) / 0x1000)
+#define __align(x) (x + (4096 - (x % 4096)))
 
 #endif /* !_MACRO_H_ */
