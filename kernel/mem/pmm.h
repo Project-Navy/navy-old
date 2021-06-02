@@ -17,6 +17,9 @@
  * along with Navy.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _KERNEL_MEM_PMM_H_
+#define _KERNEL_MEM_PMM_H_
+
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
@@ -31,3 +34,5 @@ size_t find_free_pages_pmm(size_t);
 void set_page_free_pmm(uint64_t);
 AddrRange pmm_alloc(size_t);
 void pmm_free(void *addr, size_t size);
+
+#endif /* !_KERNEL_MEM_PMM_H_ */
