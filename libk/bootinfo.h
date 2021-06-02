@@ -29,7 +29,7 @@
 typedef struct 
 {
     AddrRange range;
-    uint8_t type;
+    uint16_t type;
 } MmapEntry;
 
 typedef struct 
