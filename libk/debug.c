@@ -22,6 +22,7 @@
 #include <libk/debug.h>
 
 #include "devices/serial.h"
+#include "devices/framebuffer.h"
 
 
 void 
@@ -30,7 +31,7 @@ __assert(const char *expr, const char *file, const char *func, int line)
     char line_str[64];
     itoa(line, line_str, 10);
 
-    puts_serial(COM1, "Assert failed: ");
+    puts_serial(COM1, "Assertion failed: ");
     puts_serial(COM1, expr);
     puts_serial(COM1, " in ");
     puts_serial(COM1, file);
@@ -38,5 +39,8 @@ __assert(const char *expr, const char *file, const char *func, int line)
     puts_serial(COM1, func);
     puts_serial(COM1, ": line ");
     puts_serial(COM1, line_str);
-    puts_serial(COM1, ") \n");
+    puts_serial(COM1, ")");
+
+    printf_fb("\nAssertion failed: %s in %s (%s: line %d)", expr, file, func, line);
+    __asm__("int $1");
 }
