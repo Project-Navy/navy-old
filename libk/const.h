@@ -22,7 +22,7 @@
 
 #define LIMIT_MEMORY_MAP_SIZE 64
 
-#define PAGE_SIZE 1024
+#define PAGE_SIZE 4096
 #define KERN_POS 0xffffffff80100000
 
 #endif /* _LIBK_CONSTS_H_ */
