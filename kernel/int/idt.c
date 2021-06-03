@@ -66,5 +66,5 @@ init_idt(void)
     kidtr.limit = sizeof(kidt) - 1;
 
     flush_idt((uintptr_t) &kidtr);
-    log_debug(SUCCESS);
+    log_debug(SUCCESS, "");
 }

@@ -19,6 +19,8 @@
 
 #include <stdarg.h>
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 #include <libk/debug.h>
 
 #include "devices/serial.h"
@@ -53,8 +55,22 @@ module(const char *name)
 }
 
 void
-log_debug(const char *msg)
+log_debug(const char *level, const char *msg, ...)
 {
-    printf_serial("[ %s ] %s", modulename, msg);
-    printf_fb("[ %s ] %s", modulename, msg);
+    if (strlen(msg) == 0)
+    {
+        printf_serial("[ %s ] %s", modulename, level);
+        printf_fb("[ %s ] %s", modulename, level);
+    }
+    else
+    {
+        va_list ap;
+        char str[4096] = {0};
+        va_start(ap, msg);
+
+        vsnprintf(str, 4096, msg, ap);
+        
+        printf_serial("[ %s ] %s : %s", modulename, level, msg);
+        printf_fb("[ %s ] %s : %s ", modulename, level, msg);
+    }
 }

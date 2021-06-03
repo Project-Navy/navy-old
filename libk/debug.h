@@ -30,6 +30,6 @@
 
 void __assert(const char *, const char *, const char *, int);
 void module(const char *);
-void log_debug(const char *);
+void log_debug(const char *, const char *, ...);
 
 #endif /* !_LIBK_DEBUG_H_ */

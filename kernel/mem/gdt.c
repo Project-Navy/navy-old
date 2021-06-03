@@ -62,5 +62,5 @@ init_gdt(void)
     ptr.limit = sizeof(desc) - 1;
 
     flush_gdt((uintptr_t) &ptr);
-    log_debug(SUCCESS);
+    log_debug(SUCCESS, "");
 }

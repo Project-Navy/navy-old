@@ -51,7 +51,7 @@ init_pic(void)
     outb(SLAVE_DATA, 0);
     io_wait();
 
-    log_debug(SUCCESS);
+    log_debug(SUCCESS, "");
 }
 
 void
