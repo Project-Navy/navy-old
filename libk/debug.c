@@ -70,7 +70,7 @@ log_debug(const char *level, const char *msg, ...)
 
         vsnprintf(str, 4096, msg, ap);
         
-        printf_serial("[ %s ] %s : %s", modulename, level, msg);
-        printf_fb("[ %s ] %s : %s ", modulename, level, msg);
+        printf_serial("[ %s ] %s : %s", modulename, level, str);
+        printf_fb("[ %s ] %s : %s ", modulename, level, str);
     }
 }

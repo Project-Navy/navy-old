@@ -26,6 +26,7 @@
 #include "devices/framebuffer.h"
 
 #include "kernel/mem/gdt.h"
+#include "kernel/mem/pmm.h"
 
 #include "kernel/int/idt.h"
 #include "kernel/int/pic.h"
@@ -73,6 +74,7 @@ bootstrap(struct stivale2_struct *stivale)
     init_gdt();
     init_pic();
     init_idt();
+    init_pmm(&info);
 
     for (;;);
 }
