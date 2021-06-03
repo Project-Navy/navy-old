@@ -166,6 +166,8 @@ printf_fb(const char *format, ...)
     char s[4096] = {0};
     va_start(ap, format);
 
+    state = OFF;
+
     vsnprintf(s, 4096, format, ap);
     puts_fb(config->fb, s, &config->x, &config->y, config->defaultX);
 
