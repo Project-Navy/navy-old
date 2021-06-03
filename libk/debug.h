@@ -20,14 +20,16 @@
 #ifndef _LIBK_DEBUG_H_
 #define _LIBK_DEBUG_H_
 
-#define SUCCESS "\033[32m[+]\033[0m"
-#define ERROR "\033[31m[-]\033[0m"
-#define INFO "\033[33m[?]\033[0m"
+#define SUCCESS "\033[32mSUCCESS\033[0m"
+#define ERROR "\033[31mERROR\033[0m"
+#define INFO "\033[33mINFO\033[0m"
 
 #define assert(__expr) ((__expr) ? (void)(0) : __assert(#__expr, __FILE__, __FUNCTION__, __LINE__))
 
 #include <stdarg.h>
 
 void __assert(const char *, const char *, const char *, int);
+void module(const char *);
+void log_debug(const char *);
 
 #endif /* !_LIBK_DEBUG_H_ */

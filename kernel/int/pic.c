@@ -19,10 +19,13 @@
 
 #include "devices/io.h"
 #include "kernel/int/pic.h"
+#include <libk/debug.h>
 
 void
 init_pic(void)
 {
+    module("PIC");
+
     outb(MASTER_CMD, 0x10 | 0x01);
     io_wait();
     outb(SLAVE_CMD, 0x10 | 0x01);
@@ -47,6 +50,8 @@ init_pic(void)
     io_wait();
     outb(SLAVE_DATA, 0);
     io_wait();
+
+    log_debug(SUCCESS);
 }
 
 void

@@ -24,6 +24,7 @@
 #include "devices/serial.h"
 #include "devices/framebuffer.h"
 
+static const char *modulename;
 
 void 
 __assert(const char *expr, const char *file, const char *func, int line)
@@ -43,4 +44,17 @@ __assert(const char *expr, const char *file, const char *func, int line)
 
     printf_fb("\nAssertion failed: %s in %s (%s: line %d)", expr, file, func, line);
     __asm__("int $1");
+}
+
+void
+module(const char *name)
+{
+    modulename = name;
+}
+
+void
+log_debug(const char *msg)
+{
+    printf_serial("[ %s ] %s", modulename, msg);
+    printf_fb("[ %s ] %s", modulename, msg);
 }

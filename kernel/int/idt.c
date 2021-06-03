@@ -44,6 +44,8 @@ init_idt_desc(uintptr_t offset, enum type_attr type, IdtDesc *self)
 void 
 init_idt(void)
 {
+    module("IDT");
+    
     size_t i;
     memset(kidt, 0, 256 * sizeof(IdtDesc));
 
@@ -64,4 +66,5 @@ init_idt(void)
     kidtr.limit = sizeof(kidt) - 1;
 
     flush_idt((uintptr_t) &kidtr);
+    log_debug(SUCCESS);
 }

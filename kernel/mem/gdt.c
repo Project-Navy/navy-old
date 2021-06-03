@@ -48,6 +48,8 @@ init_descriptor(uint32_t base, uint32_t limit, uint8_t access, GdtDescriptor *se
 void 
 init_gdt(void)
 {
+    module("GDT");
+    
     init_descriptor(0, 0, 0, &desc[0]);
 
     init_descriptor(0, 0, KERNEL | CODE, &desc[1]);
@@ -60,4 +62,5 @@ init_gdt(void)
     ptr.limit = sizeof(desc) - 1;
 
     flush_gdt((uintptr_t) &ptr);
+    log_debug(SUCCESS);
 }

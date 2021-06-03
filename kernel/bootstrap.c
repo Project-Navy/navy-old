@@ -19,16 +19,11 @@
 
 #include <stivale2.h>
 #include <stdint.h>
-#include <string.h>
-#include <stddef.h>
-#include <stdlib.h>
 
-#include <libk/debug.h>
 #include <libk/bootinfo.h>
 
 #include "devices/serial.h"
 #include "devices/framebuffer.h"
-#include "kernel/macro.h"
 
 #include "kernel/mem/gdt.h"
 
@@ -42,8 +37,10 @@ static stack stacks[10] = { 0 };
 
 void bootstrap(struct stivale2_struct *);
 
-struct stivale2_header_tag_framebuffer framebuffer_request = {
-    .tag = {
+struct stivale2_header_tag_framebuffer framebuffer_request =
+{
+    .tag =
+    {
         .identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID,
         .next = 0
     },
@@ -69,21 +66,13 @@ bootstrap(struct stivale2_struct *stivale)
 
     stivale2_parse_header(&info, stivale);
     init_fb(info.framebuffer, 10, DEFAULT_FG, DEFAULT_BG);
-    printf_serial("%s Total memory: %d MiB", SUCCESS, info.memory_usable / 1048576);
+    printf_serial("Total memory: %d MiB", info.memory_usable / 1048576);
 
     init_serial(COM1);
 
     init_gdt();
-    printf_serial("%s GDT loaded !", SUCCESS);
-    printf_fb("%s PIC initialised !", SUCCESS);
-
     init_pic();
-    printf_serial("%s PIC initialised !", SUCCESS);
-    printf_fb("%s PIC initialised !", SUCCESS);
-
     init_idt();
-    printf_serial("%s IDT loaded !", SUCCESS);
-    printf_fb("%s IDT loaded !", SUCCESS);
 
     for (;;);
 }
