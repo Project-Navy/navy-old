@@ -27,6 +27,7 @@
 
 #include "kernel/mem/gdt.h"
 #include "kernel/mem/pmm.h"
+#include "kernel/mem/vmm.h"
 
 #include "kernel/int/idt.h"
 #include "kernel/int/pic.h"
@@ -75,6 +76,7 @@ bootstrap(struct stivale2_struct *stivale)
     init_pic();
     init_idt();
     init_pmm(&info);
+    init_vmm();
 
     for (;;);
 }

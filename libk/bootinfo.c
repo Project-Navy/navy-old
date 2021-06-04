@@ -36,23 +36,17 @@ stivale2_parse_mmap(BootInfo *self, struct stivale2_struct_tag_memmap *mmap)
     {
         mmap_entry = mmap->memmap[i];
 
-        if (mmap_entry.base > UINTPTR_MAX || (mmap_entry.base + mmap_entry.length > UINTPTR_MAX))
-        {
-            continue;
-        }
-
         if (mmap_entry.type == STIVALE2_MMAP_USABLE)
         {
             self->memory_usable += mmap_entry.length;
         }
 
-        self->usable_pages = self->memory_usable / 4096
+        self->usable_pages = self->memory_usable / 4096;
         entry = &self->mmap[self->memory_map_size];
         
         range.base = mmap_entry.base;
         range.length = mmap_entry.length;
 
-        align_range(&range);
         entry->range = range;
         entry->type = mmap_entry.type;
 
