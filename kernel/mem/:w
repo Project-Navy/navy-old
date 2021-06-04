@@ -24,7 +24,6 @@
 
 static uint8_t *bitmap = NULL;
 static uint64_t free_memory = 0;
-static uint64_t last_free_page = 0;
 static size_t usable_pages;
 
 static void
@@ -33,17 +32,16 @@ free_pmm(uint64_t page_addr)
     uint64_t bit = page_addr % 8;
     uint64_t byte = page_addr / 8;
 
-    bitmap[byte] &= ~(1 << bit);
+    bitmap[byte] |= (1 << bit);
 }
 
 static void
-set_pmm(uint64_t page_addr)
+alloc_pmm(uint64_t page_addr)
 {
     uint64_t bit = page_addr % 8;
     uint64_t byte = page_addr / 8;
 
-    last_free_page = page_addr;
-    bitmap[byte] |= (1 << bit);
+    bitmap[byte] &= ~(1 << bit);
 }
 
 static uint64_t
@@ -103,7 +101,7 @@ find_free_pages(size_t count)
     size_t page_found = 0;
     size_t i;
 
-    for (i = last_free_page; i < usable_pages; i++)
+    for (i = 0; i < usable_pages; i++)
     {
         if (!is_set_pmm(i))
         {
@@ -111,7 +109,6 @@ find_free_pages(size_t count)
 
             if (page_found == count)
             {
-                last_free_page = i;
                 return i;
             }
         }
@@ -119,12 +116,6 @@ find_free_pages(size_t count)
         {
             page_found = 0;
         }
-    }
-
-    if (last_free_page != 0)
-    {
-        last_free_page = 0;
-        return find_free_pages(count);
     }
 
     assert(0);
@@ -141,8 +132,10 @@ alloc_pmm(size_t count)
 
     for (i = page; i < count+page; i++)
     {
-        set_pmm(i);
+        alloc_pmm(i);
     }
+
+    log_debug(SUCCESS, "%d pages allocated", page);
 
     return (void *) (page * PAGE_SIZE);
 }
