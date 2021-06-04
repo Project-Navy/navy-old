@@ -21,6 +21,7 @@
 #include <stivale2.h>
 
 #include <libk/bootinfo.h>
+#include <libk/debug.h>
 #include "devices/serial.h"
 
 void 
@@ -40,12 +41,12 @@ stivale2_parse_mmap(BootInfo *self, struct stivale2_struct_tag_memmap *mmap)
             continue;
         }
 
-        if (mmap_entry.type == STIVALE2_MMAP_USABLE || 
-            mmap_entry.type == STIVALE2_MMAP_KERNEL_AND_MODULES)
+        if (mmap_entry.type == STIVALE2_MMAP_USABLE)
         {
             self->memory_usable += mmap_entry.length;
         }
 
+        self->usable_pages = self->memory_usable / 4096
         entry = &self->mmap[self->memory_map_size];
         
         range.base = mmap_entry.base;
@@ -66,6 +67,7 @@ stivale2_parse_header(BootInfo *self, struct stivale2_struct *stivale)
 
     self->memory_usable = 0;
     self->memory_map_size = 0;
+    self->usable_pages = 0;
 
     while (tag != NULL)
     {

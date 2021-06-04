@@ -41,6 +41,7 @@ typedef struct
 
     size_t memory_map_size;
     size_t memory_usable; 
+    size_t usable_pages;
     MmapEntry mmap[LIMIT_MEMORY_MAP_SIZE];
 } BootInfo;
 
