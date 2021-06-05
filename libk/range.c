@@ -35,7 +35,8 @@ align_range(AddrRange *self)
 
     self->base -= align;
     self->length += align;
-    self->length = PAGE_SIZE - self->length % PAGE_SIZE;
+
+    self->length += PAGE_SIZE - self->length % PAGE_SIZE;
 }
 
 size_t 
