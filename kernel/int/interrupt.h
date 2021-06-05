@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-typedef struct __attribute__((packed))
+typedef struct 
 {
     uint64_t r15;
     uint64_t r14;
