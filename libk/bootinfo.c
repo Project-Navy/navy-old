@@ -50,6 +50,8 @@ stivale2_parse_mmap(BootInfo *self, struct stivale2_struct_tag_memmap *mmap)
         entry->range = range;
         entry->type = mmap_entry.type;
 
+        align_range(&entry->range);
+
         self->memory_map_size++;
     }
 }
