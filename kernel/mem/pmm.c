@@ -55,12 +55,34 @@ is_set_pmm(uint64_t page_addr)
 }
 
 void
+set_used_pmm(AddrRange range)
+{
+    size_t i;
+    uintptr_t addr;
+
+    assert(is_page_aligned(range));
+
+    for (i = 0; i < range.length / PAGE_SIZE; i += PAGE_SIZE)
+    {
+        addr = range.base + i;
+
+        if (!is_set_pmm(addr))
+        {
+            set_pmm(addr / PAGE_SIZE);
+            free_memory -= PAGE_SIZE;
+        }
+    }
+}
+
+void
 init_pmm(BootInfo *info)
 {
     module("PMM");
 
     size_t i;
     usable_pages = info->usable_pages;
+
+    log_debug(INFO, "Usable pages: %d", usable_pages);
 
     for (i = 0; i < info->memory_map_size; i++)
     {
@@ -134,6 +156,7 @@ find_free_pages(size_t count)
 void *
 alloc_pmm(size_t count)
 {
+    module_push();
     module("PMM");
 
     size_t i;
@@ -144,5 +167,7 @@ alloc_pmm(size_t count)
         set_pmm(i);
     }
 
+    module_pop();
+    
     return (void *) (page * PAGE_SIZE);
 }

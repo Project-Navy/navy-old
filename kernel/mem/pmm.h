@@ -21,9 +21,11 @@
 #define _KERNEL_MEM_PMM_H_
 
 #include <libk/bootinfo.h>
+#include <libk/range.h>
 #include <stdint.h>
 
 void init_pmm(BootInfo *);
 void *alloc_pmm(size_t);
+void set_used_pmm(AddrRange);
 
 #endif /* !_KERNEL_MEM_PMM_H_ */
