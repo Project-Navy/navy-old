@@ -26,7 +26,8 @@
 #include "devices/serial.h"
 #include "devices/framebuffer.h"
 
-static const char *modulename;
+static char *modulename;
+static char previous[64] = {0};
 
 void 
 __assert(const char *expr, const char *file, const char *func, int line)
@@ -49,9 +50,20 @@ __assert(const char *expr, const char *file, const char *func, int line)
 }
 
 void
-module(const char *name)
+module(char *name)
 {
     modulename = name;
+}
+
+void module_push(void)
+{
+    strcpy((char *) previous, modulename);
+}
+
+void module_pop(void)
+{
+    strcpy(modulename, (char *) previous);
+    memset((void *) previous, 0, 64);
 }
 
 void
@@ -61,6 +73,11 @@ log_debug(const char *level, const char *msg, ...)
     {
         printf_serial("[ %s ] %s", modulename, level);
         printf_fb("[ %s ] %s", modulename, level);
+
+        if (previous[0] != 0)
+        {
+            module_pop();
+        }
     }
     else
     {

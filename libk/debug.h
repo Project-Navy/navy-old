@@ -29,7 +29,9 @@
 #include <stdarg.h>
 
 void __assert(const char *, const char *, const char *, int);
-void module(const char *);
+void module(char *);
 void log_debug(const char *, const char *, ...);
+void module_push(void);
+void module_pop(void);
 
 #endif /* !_LIBK_DEBUG_H_ */
