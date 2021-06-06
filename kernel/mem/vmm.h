@@ -21,8 +21,14 @@
 #define _KERNEL_VMM_H_
 
 #include <libk/bootinfo.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 #define MEM_PHYS_OFFSET 0xffffffff80000000
 void init_vmm(BootInfo *);
+uintptr_t *alloc_plm4(void);
+uintptr_t *get_krnl_addrspace(void);
+void alloc_vmm(void *, size_t, uintptr_t *, bool);
+void free_vmm(void *, AddrRange);
 
 #endif /* !_KERNEL_VMM_H_ */

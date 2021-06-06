@@ -31,6 +31,12 @@ extern uintptr_t kernel_physical_end;
 
 static uintptr_t *kernel_plm4;
 
+uintptr_t *
+get_krnl_addrspace(void)
+{
+    return kernel_plm4;
+}
+
 static uintptr_t *
 get_next_level(uintptr_t *current_level, size_t index)
 {
@@ -76,6 +82,220 @@ static void
 load_cr3(uintptr_t val)
 {
     __asm__ volatile ("mov %%cr3, %0" :: "r" (val));
+}
+
+uintptr_t *
+alloc_plm4(void)
+{
+    uintptr_t *plm4 = alloc_pmm(1);
+    memset(plm4, 0, PAGE_SIZE);
+
+    return plm4;
+}
+
+static bool
+is_present_vmm(uintptr_t *addrspace, uintptr_t vaddr)
+{
+    size_t plm4_entry = (vaddr & ((size_t) 0x1ff << 39)) >> 39;
+    size_t pdpt_entry = (vaddr & ((size_t) 0x1ff << 30)) >> 30;
+    size_t pd_entry = (vaddr & ((size_t) 0x1ff << 21)) >> 21;
+    size_t pt_entry = (vaddr & ((size_t) 0x1ff << 12)) >> 12;         
+
+    uintptr_t *pdpt;
+    uintptr_t *pd;
+    uintptr_t *pt;
+
+    if (addrspace[plm4_entry] & 0x1)
+    {
+        return false;
+    }
+
+    pdpt = get_next_level(addrspace, plm4_entry);
+
+    if (pdpt[pdpt_entry] & 0x1)
+    {
+        return false;
+    }
+
+    pd = get_next_level(pdpt, pdpt_entry);
+
+    if (pd[pd_entry] & 0x1)
+    {
+        return false;
+    }
+
+    pt = get_next_level(pd, pd_entry);
+
+    return pt[pt_entry] & 0x1;
+}
+
+static uintptr_t
+virt2phys(uintptr_t *addrspace, uintptr_t vaddr)
+{
+    size_t plm4_entry = (vaddr & ((size_t) 0x1ff << 39)) >> 39;
+    size_t pdpt_entry = (vaddr & ((size_t) 0x1ff << 30)) >> 30;
+    size_t pd_entry = (vaddr & ((size_t) 0x1ff << 21)) >> 21;
+    size_t pt_entry = (vaddr & ((size_t) 0x1ff << 12)) >> 12;         
+
+    uintptr_t *pdpt;
+    uintptr_t *pd;
+    uintptr_t *pt;
+
+    if (addrspace[plm4_entry] & 0x1)
+    {
+        return 0; 
+    }
+
+    pdpt = get_next_level(addrspace, plm4_entry);
+
+    if (pdpt[pdpt_entry] & 0x1)
+    {
+        return 0;
+    }
+
+    pd = get_next_level(pdpt, pdpt_entry);
+
+    if (pd[pd_entry] & 0x1)
+    {
+        return 0;
+    }
+
+    pt = get_next_level(pd, pd_entry);
+    return pt[pt_entry] & 0xfffffffffffff000;
+}
+
+static void
+unmap_vmm(uintptr_t *addrspace, AddrRange range)
+{
+    size_t i;
+    uintptr_t vaddr;
+
+    uintptr_t *pdpt;
+    uintptr_t *pd;
+    uintptr_t *pt;
+
+    size_t plm4_entry;
+    size_t pdpt_entry;
+    size_t pd_entry;
+    size_t pt_entry;
+
+    for (i = 0; i < range.base / PAGE_SIZE; i++)
+    {
+        vaddr = range.base + i * PAGE_SIZE;
+
+        plm4_entry = (vaddr & ((size_t) 0x1ff << 39)) >> 39;
+        pdpt_entry = (vaddr & ((size_t) 0x1ff << 30)) >> 30;
+        pd_entry = (vaddr & ((size_t) 0x1ff << 21)) >> 21;
+        pt_entry = (vaddr & ((size_t) 0x1ff << 12)) >> 12;         
+
+        if (addrspace[plm4_entry] & 0x1)
+        {
+            continue;
+        }
+
+        pdpt = get_next_level(addrspace, plm4_entry);
+
+        if (pdpt[pdpt_entry] & 0x1)
+        {
+            continue;
+        }
+
+        pd = get_next_level(addrspace, pdpt_entry);
+
+        if (pd[pd_entry] & 0x1)
+        {
+            continue;
+        }
+
+        pt = get_next_level(pd, pd_entry);
+        pt[pt_entry] = 0;
+    }
+}
+
+void
+free_vmm(void *addrspace, AddrRange range)
+{
+    size_t i;
+    uintptr_t vaddr;
+    AddrRange physRange;
+    AddrRange virtRange;
+    
+    assert(is_page_aligned(range));
+    
+    for (i = 0; i < range.length / PAGE_SIZE; i++)
+    {
+        vaddr = range.base + i * PAGE_SIZE;
+
+        if (is_present_vmm(addrspace, vaddr))
+        {
+            physRange = (AddrRange) {
+                .base = virt2phys(addrspace, vaddr),
+                .length = PAGE_SIZE
+            };
+
+            virtRange = (AddrRange) {
+                .base = vaddr,
+                .length = PAGE_SIZE
+            };
+
+            free_pmm(physRange);
+            unmap_vmm(addrspace, range);
+        }
+    }
+}
+
+void
+alloc_vmm(void *addrspace, size_t pages, uintptr_t *vaddr, bool is_user)
+{
+    size_t i;
+    size_t start;
+    size_t end;
+    size_t current_size = 0;
+
+    AddrRange range =
+    {
+        .base = (uintptr_t) alloc_pmm(pages),
+        .length = pages * PAGE_SIZE
+    };
+
+    align_range(&range);
+    assert(is_page_aligned(range));
+
+    if (is_user)
+    {
+        start = 256;
+        end = 1024;
+    }
+    else
+    {
+        start = 1;
+        end = 256;
+    }
+
+    for (i = start * 1024; i < end * 1024; i++)
+    {
+        uintptr_t addr = i * PAGE_SIZE;
+
+        if (!is_present_vmm(addrspace, addr))
+        {
+            if (current_size == 0)
+            {
+                *vaddr = addr;
+            }
+
+            current_size += PAGE_SIZE;
+
+            if (current_size == range.length)
+            {
+                map_vmm(addrspace, range.base, *vaddr, is_user);
+                return;
+            }
+        }
+    }
+
+    module("VMM");
+    log_debug(ERROR, "Wanted: %d, Got: %d", range.length, current_size);
+    assert(0);
 }
 
 void

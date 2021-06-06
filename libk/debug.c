@@ -26,7 +26,7 @@
 #include "devices/serial.h"
 #include "devices/framebuffer.h"
 
-static char *modulename;
+static char modulename[64];
 static char previous[64] = {0};
 
 void 
@@ -52,7 +52,7 @@ __assert(const char *expr, const char *file, const char *func, int line)
 void
 module(char *name)
 {
-    modulename = name;
+    strcpy(modulename, name);
 }
 
 void module_push(void)

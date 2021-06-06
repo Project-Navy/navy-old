@@ -28,7 +28,7 @@ static uint64_t last_free_page = 0;
 static size_t usable_pages;
 
 static void
-free_pmm(uint64_t page_addr)
+unset_pmm(uint64_t page_addr)
 {
     uint64_t bit = page_addr % 8;
     uint64_t byte = page_addr / 8;
@@ -75,6 +75,18 @@ set_used_pmm(AddrRange range)
 }
 
 void
+free_pmm(AddrRange range)
+{
+    size_t i;
+    uintptr_t target = (uintptr_t) range.base / PAGE_SIZE;
+
+    for (i = target; i < target + range.length / PAGE_SIZE; i++)
+    {
+        unset_pmm(i);
+    }
+}
+
+void
 init_pmm(BootInfo *info)
 {
     module("PMM");
@@ -104,7 +116,7 @@ init_pmm(BootInfo *info)
         {
             for (j = 0; j < info->mmap[i].range.length; j += PAGE_SIZE)
             {
-                free_pmm((info->mmap[i].range.base + j) / PAGE_SIZE);
+                unset_pmm((info->mmap[i].range.base + j) / PAGE_SIZE);
                 free_memory += PAGE_SIZE;
             }
         }
@@ -112,7 +124,7 @@ init_pmm(BootInfo *info)
 
     for (i = 0; i <= usable_pages; i += PAGE_SIZE)
     {
-        free_pmm((i + (uint64_t) bitmap) / PAGE_SIZE);
+        unset_pmm((i + (uint64_t) bitmap) / PAGE_SIZE);
     }
 
     log_debug(SUCCESS, "");

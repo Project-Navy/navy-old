@@ -22,8 +22,12 @@
 #include "kernel/int/interrupt.h"
 #include "kernel/int/pic.h"
 
+#include "kernel/proc/task.h"
+
 #include "devices/serial.h"
 #include "devices/framebuffer.h"
+
+static uint64_t tick = 0;
 
 static const char *exceptions[32] = {
     "Division by zero",
@@ -58,6 +62,12 @@ static const char *exceptions[32] = {
     "Security Exception",
     "Reserved"
 };
+
+uint64_t
+fetch_tick(void)
+{
+    return tick;
+}
 
 void 
 dump_stack_frame(InterruptStackFrame *stackframe)
@@ -119,16 +129,18 @@ backtrace(uint64_t *rbp)
     printf_fb("");
 }
 
-void
+uint64_t 
 interrupts_handler(uintptr_t rsp)
 {
-    printf_fb("\n !!! PANIC !!!");
-    printf_serial("\n !!! PANIC !!!");
+    uint8_t irq;
+    
     InterruptStackFrame *stackframe = (InterruptStackFrame *) rsp;
-    PIC_sendEOI(stackframe->intno);
 
     if (stackframe->intno < 32)
     {
+        printf_fb("\n !!! PANIC !!!");
+        printf_serial("\n !!! PANIC !!!");
+
         backtrace(&stackframe->rbp);
         dump_stack_frame(stackframe);
 
@@ -137,8 +149,21 @@ interrupts_handler(uintptr_t rsp)
 
         printf_fb("%s (ERR: %d) (CODE: %d)", exceptions[stackframe->intno], 
                 stackframe->intno, stackframe->err);
+
+        __asm__("cli");
+        __asm__("hlt");
+    }
+    else if (stackframe->intno < 48)
+    {
+        irq = stackframe->intno - 32;
+
+        if (irq == 0)
+        {
+            tick++;
+            rsp = sched(rsp);
+        }
     }
 
-    __asm__("cli");
-    __asm__("hlt");
+    PIC_sendEOI(stackframe->intno);
+    return rsp;
 }

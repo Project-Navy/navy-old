@@ -32,6 +32,7 @@ typedef struct
     uint64_t ss;
 } InterruptStackFrame;
 
-void interrupts_handler(uintptr_t);
+uint64_t fetch_tick(void);
+uint64_t interrupts_handler(uintptr_t);
 
 #endif /* !_KERNEL_INT_INTERRUPT_H_ */

@@ -32,6 +32,8 @@
 #include "kernel/int/idt.h"
 #include "kernel/int/pic.h"
 
+#include "kernel/proc/task.h"
+
 #include "kernel/colorscheme.h"
 
 typedef uint8_t stack[4096];
@@ -61,6 +63,28 @@ struct stivale2_header header2 =
     .tags        = (uintptr_t) &framebuffer_request
 };
 
+void
+count(void)
+{
+    size_t i;
+
+    for (i = 0; i < 100; i++)
+    {
+        printf_serial("%d", i);
+    }
+}
+
+void
+count2(void)
+{
+    size_t i;
+
+    for (i = 0; i < 100; i += 2)
+    {
+        printf_serial("%d", i);
+    }
+}
+
 void 
 bootstrap(struct stivale2_struct *stivale)
 {
@@ -77,6 +101,10 @@ bootstrap(struct stivale2_struct *stivale)
     init_idt();
     init_pmm(&info);
     init_vmm(&info);
+    init_tasking();
+
+    create_task("Count", count, false);
+    create_task("Count2", count2, false);
 
     for (;;);
 }

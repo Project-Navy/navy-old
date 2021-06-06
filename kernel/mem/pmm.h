@@ -25,6 +25,7 @@
 #include <stdint.h>
 
 void init_pmm(BootInfo *);
+void free_pmm(AddrRange);
 void *alloc_pmm(size_t);
 void set_used_pmm(AddrRange);
 

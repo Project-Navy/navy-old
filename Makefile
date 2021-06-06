@@ -1,7 +1,6 @@
 # Copyright (C) 2020-2021 KeyboardSlayer (Jordan Dalcq)
 # 
 # This file is part of Navy.
-# 
 # Navy is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
@@ -53,8 +52,9 @@ SRC =								\
 	$(wildcard devices/*.c)			\
 	$(wildcard kernel/*.c)			\
 	$(wildcard kernel/*/*.c)		\
+	$(wildcard libc/*.c)			\
 	$(wildcard libk/*.c)			\
-	$(wildcard libc/*.c)	
+	$(wildcard third-party/liballoc/*.c)	\
 
 ASRC = $(wildcard kernel/*/*.s)		
 
