@@ -20,7 +20,7 @@
 #ifndef _KERNEL_VMM_H_
 #define _KERNEL_VMM_H_
 
-#define KERNEL_VIRTUAL_BASE 0xffff800000000000
+#define MEM_PHYS_OFFSET 0xffffffff80000000
 void init_vmm(void);
 
 #endif /* !_KERNEL_VMM_H_ */
