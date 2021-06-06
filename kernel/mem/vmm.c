@@ -79,7 +79,7 @@ load_cr3(uintptr_t val)
 }
 
 void
-init_vmm(void)
+init_vmm(BootInfo *info)
 {
     module("VMM");
 
@@ -94,6 +94,22 @@ init_vmm(void)
         map_vmm(kernel_plm4, addr, addr, false);
         map_vmm(kernel_plm4, addr, MEM_PHYS_OFFSET + addr, false);
         map_vmm(kernel_plm4, addr, (uintptr_t) &kernel_virtual_start + addr, false);
+    }
+
+    for (i = 0; i < info->memory_map_size; i++)
+    {
+        size_t j;
+
+        for (j = 0; j < info->mmap[i].range.length / PAGE_SIZE; j++)
+        {
+            uintptr_t addr = info->mmap[i].range.base + j * PAGE_SIZE;
+            map_vmm(kernel_plm4, addr, MEM_PHYS_OFFSET + addr, false);
+
+            if (info->mmap[i].type == STIVALE2_MMAP_KERNEL_AND_MODULES)
+            {
+                map_vmm(kernel_plm4, addr, (uintptr_t) &kernel_virtual_start + addr, false);
+            }
+        }
     }
 
     load_cr3((uintptr_t) kernel_plm4 - MEM_PHYS_OFFSET);

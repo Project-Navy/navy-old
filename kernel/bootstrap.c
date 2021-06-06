@@ -76,7 +76,7 @@ bootstrap(struct stivale2_struct *stivale)
     init_pic();
     init_idt();
     init_pmm(&info);
-    init_vmm();
+    init_vmm(&info);
 
     for (;;);
 }

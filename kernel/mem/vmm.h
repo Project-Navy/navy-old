@@ -20,7 +20,9 @@
 #ifndef _KERNEL_VMM_H_
 #define _KERNEL_VMM_H_
 
+#include <libk/bootinfo.h>
+
 #define MEM_PHYS_OFFSET 0xffffffff80000000
-void init_vmm(void);
+void init_vmm(BootInfo *);
 
 #endif /* !_KERNEL_VMM_H_ */
