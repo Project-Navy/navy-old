@@ -22,8 +22,6 @@
 #include "kernel/int/interrupt.h"
 #include "kernel/int/pic.h"
 
-#include "kernel/proc/task.h"
-
 #include "devices/serial.h"
 #include "devices/framebuffer.h"
 
@@ -160,7 +158,6 @@ interrupts_handler(uintptr_t rsp)
         if (irq == 0)
         {
             tick++;
-            rsp = sched(rsp);
         }
     }
 
