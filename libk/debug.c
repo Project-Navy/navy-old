@@ -52,6 +52,7 @@ __assert(const char *expr, const char *file, const char *func, int line)
 void
 module(char *name)
 {
+    memset(modulename, 0, 64);
     strcpy(modulename, name);
 }
 
